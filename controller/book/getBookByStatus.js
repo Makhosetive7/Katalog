@@ -3,7 +3,7 @@ import Book from "../../model/book.js";
 export const getBookByStatus = async (req, res) => {
   try {
     const { status } = req.params;
-    const validStatuses = ["Want to Read", "Reading", "Completed"];
+    const validStatuses = ["Planned", "In-Progress", "Completed", "Dropped"];
 
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ error: "Invalid status value" });
@@ -13,8 +13,8 @@ export const getBookByStatus = async (req, res) => {
 
     res.status(200).json({
       status,
-      count: bookStatus.length, 
-      books: bookStatus
+      count: bookStatus.length,
+      books: bookStatus,
     });
   } catch (error) {
     console.error("Failed getting books by status:", error.message);

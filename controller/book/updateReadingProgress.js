@@ -28,7 +28,7 @@ export const updateReadingProgress = async (req, res) => {
           message: "Current chapter cannot exceed total available chapters",
         });
       }
-      bookProgress.currentChapter = currentChapter; // ❌ you had `book.totalChapters = currentChapter`
+      bookProgress.currentChapter = currentChapter;
     }
 
     // Add/update notes for chapter

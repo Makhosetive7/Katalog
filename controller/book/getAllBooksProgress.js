@@ -3,7 +3,7 @@ import Book from "../../model/book.js"
 export const getAllBooksProgress = async (req, res) => {
   try {
     const books = await Book.find(
-      { status: { $in: ['Reading', 'Completed'] } },
+      { status: { $in: ['In-Progress', 'Completed', 'Dropped'] } },
       { title: 1, completionPercentage: 1, status: 1, pages: 1, currentPage: 1 }
     ).sort({ completionPercentage: -1 });
 

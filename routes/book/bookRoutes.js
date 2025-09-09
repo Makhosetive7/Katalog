@@ -13,7 +13,7 @@ import {
   getChapterNotes,
   getAllBooksProgress,
   getProgressAnalytics
-} from "../../controller/Books/booksController.js";
+} from "../../controller/book/booksController.js";
 
 const router = express.Router();
 
