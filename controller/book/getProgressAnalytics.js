@@ -13,6 +13,12 @@ export const getProgressAnalytics = async (req, res) => {
         currentChapter: 1,
         totalChapters: 1,
         title: 1,
+        author: 1,
+        genre: 1,
+        publishedDate: 1,
+        description: 1,
+        coverImageUrl: 1,
+        chapterNotes: 1,
       }
     );
 
@@ -42,7 +48,17 @@ export const getProgressAnalytics = async (req, res) => {
       recommendedMetric: book.pages > 0 ? "pages" : "chapters",
     };
 
-    res.json(analytics);
+    res.json({
+      analytics,
+      bookDetails: {
+        title: book.title,
+        author: book.author,
+        genre: book.genre,
+        publishedDate: book.publishedDate,
+        description: book.description,
+        coverImageUrl: book.coverImageUrl,
+      },
+    });
   } catch (error) {
     console.error("Failed getting progress analytics", error.message);
     res.status(500).json({ message: "Server error", error: error.message });

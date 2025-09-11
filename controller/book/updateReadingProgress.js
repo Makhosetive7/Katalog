@@ -2,88 +2,94 @@ import Book from "../../model/book.js";
 
 export const updateReadingProgress = async (req, res) => {
   try {
-    const { currentPage, currentChapter, note } = req.body;
+    const { currentPage, currentChapter, note, status } = req.body;
     const bookId = req.params.id;
 
-    // Find the actual book document
-    const bookProgress = await Book.findOne({ _id: bookId });
+    const book = await Book.findById(bookId);
+    if (!book) return res.status(404).json({ message: "Book not found" });
 
-    if (!bookProgress) {
-      return res.status(404).json({ message: "Book not found" });
-    }
+    let pagesRead = 0;
 
-    // ✅ Use `bookProgress`, not `book`
+    // --- Update Pages ---
     if (currentPage !== undefined) {
-      if (currentPage > bookProgress.pages) {
+      if (currentPage > book.pages) {
         return res.status(400).json({
           message: "Current page cannot exceed total number of pages",
         });
       }
-      bookProgress.currentPage = currentPage;
+
+      if (currentPage > book.currentPage) {
+        pagesRead = currentPage - book.currentPage;
+
+        // Push to readingTimeline
+        const today = new Date().toISOString().split("T")[0];
+        const existingEntry = book.readingTimeline.find(
+          (entry) => entry.date.toISOString().split("T")[0] === today
+        );
+
+        if (existingEntry) {
+          existingEntry.pagesRead += pagesRead;
+        } else {
+          book.readingTimeline.push({
+            date: new Date(),
+            pagesRead,
+            chapter: currentChapter || book.currentChapter,
+          });
+        }
+      }
+
+      book.currentPage = currentPage;
     }
 
+    // --- Update Chapters ---
     if (currentChapter !== undefined) {
-      if (currentChapter > bookProgress.totalChapters) {
+      if (currentChapter > book.chapters) {
         return res.status(400).json({
-          message: "Current chapter cannot exceed total available chapters",
+          message: "Current chapter cannot exceed total chapters",
         });
       }
-      bookProgress.currentChapter = currentChapter;
+      book.currentChapter = currentChapter;
     }
 
-    // Add/update notes for chapter
+    // --- Update Notes ---
     if (note && currentChapter !== undefined) {
-      const existingNoteIndex = bookProgress.chapterNotes.findIndex(
+      const existingNote = book.chapterNotes.find(
         (n) => n.chapter === currentChapter
       );
-
-      if (existingNoteIndex > -1) {
-        bookProgress.chapterNotes[existingNoteIndex].note = note;
-        bookProgress.chapterNotes[existingNoteIndex].createdAt = new Date();
+      if (existingNote) {
+        existingNote.note = note;
+        existingNote.createdAt = new Date();
       } else {
-        bookProgress.chapterNotes.push({
-          chapter: currentChapter,
-          note: note,
-        });
+        book.chapterNotes.push({ chapter: currentChapter, note });
       }
     }
 
-    // Recalculate completion %
-    let completionPercentage = 0;
-
-    if (bookProgress.pages > 0 && bookProgress.currentPage > 0) {
-      completionPercentage = Math.round(
-        (bookProgress.currentPage / bookProgress.pages) * 100
+    // --- Update Completion ---
+    if (book.pages > 0) {
+      book.completionPercentage = Math.round(
+        (book.currentPage / book.pages) * 100
       );
-    } else if (
-      bookProgress.totalChapters > 0 &&
-      bookProgress.currentChapter > 0
-    ) {
-      completionPercentage = Math.round(
-        (bookProgress.currentChapter / bookProgress.totalChapters) * 100
+    } else if (book.chapters > 0) {
+      book.completionPercentage = Math.round(
+        (book.currentChapter / book.chapters) * 100
       );
     }
+    book.completionPercentage = Math.min(book.completionPercentage, 100);
 
-    bookProgress.completionPercentage = Math.min(completionPercentage, 100);
-
-    
-    if (
-      bookProgress.completionPercentage >= 100 &&
-      bookProgress.status !== "Completed"
-    ) {
-      bookProgress.status = "Completed";
-      bookProgress.dateCompleted = new Date();
-    } else if (
-      bookProgress.completionPercentage > 0 &&
-      bookProgress.status === "Planned"
-    ) {
-      bookProgress.status = "In-Progress";
-      if (!bookProgress.dateStarted) {
-        bookProgress.dateStarted = new Date();
+    // --- Update Status ---
+    if (status) {
+      book.status = status;
+    } else {
+      if (book.completionPercentage >= 100) {
+        book.status = "Completed";
+        book.timeline.completedAt = new Date();
+      } else if (book.completionPercentage > 0 && book.status === "Planned") {
+        book.status = "In-Progress";
+        if (!book.timeline.startedAt) book.timeline.startedAt = new Date();
       }
     }
 
-    const updatedBook = await bookProgress.save();
+    const updatedBook = await book.save();
 
     res.json({
       message: "Progress updated successfully",
@@ -91,7 +97,7 @@ export const updateReadingProgress = async (req, res) => {
       completionPercentage: updatedBook.completionPercentage,
     });
   } catch (error) {
-    console.log("Failed updating reading progress:", error.message);
+    console.error("❌ Failed updating reading progress:", error.message);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };

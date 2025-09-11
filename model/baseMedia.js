@@ -27,7 +27,7 @@ const baseMediaSchema = new mongoose.Schema({
   timeline: {
     startedAt: Date,
     completedAt: Date,
-    timeSpent: Number // Total hours spent
+    timeSpent: Number 
   },
   completionPercentage: {
     type: Number,

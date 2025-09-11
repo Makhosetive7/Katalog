@@ -2,23 +2,22 @@ import Book from "../../model/book.js";
 
 export const createBook = async (req, res) => {
   try {
-    const { title, genre, author, pages, status, rating } = req.body;
 
-    if (!title || !genre || !author || !pages) {
-      return res
-        .status(400)
-        .json({ error: "Title, genre, author, and pages are required" });
-    }
+    const { title, genre, author, pages, chapters, status, rating } = req.body;
 
-    let newBook = new Book({
-      title,
-      genre,
-      author,
-      pages,
-      status: status || "Planned",
-      rating: rating || 0,
-    });
+if (!title || !genre || !author || !pages || !chapters) {
+  return res.status(400).json({ error: "Title, genre, author, pages, and chapters are required" });
+}
 
+let newBook = new Book({
+  title,
+  genre,
+  author,
+  pages,
+  chapters,  
+  status: status || "Planned",
+  rating: rating || 0,
+});
     const savedBook = await newBook.save();
 
     res.status(201).json({
