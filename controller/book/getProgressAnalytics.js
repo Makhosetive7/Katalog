@@ -1,24 +1,21 @@
 import Book from "../../model/book.js";
+import ReadingSession from "../../model/readingSession.js";
 
 export const getProgressAnalytics = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id: bookId } = req.params;
 
     const book = await Book.findOne(
-      { _id: id },
+      { _id: bookId },
       {
-        completionPercentage: 1,
-        currentPage: 1,
-        pages: 1,
-        currentChapter: 1,
-        totalChapters: 1,
         title: 1,
         author: 1,
         genre: 1,
         publishedDate: 1,
         description: 1,
         coverImageUrl: 1,
-        chapterNotes: 1,
+        pages: 1,
+        chapters: 1,
       }
     );
 
@@ -26,24 +23,42 @@ export const getProgressAnalytics = async (req, res) => {
       return res.status(404).json({ error: "Book not found" });
     }
 
+    const readingSessions = await ReadingSession.find(
+      {
+        book: bookId,
+       // user: req.user.id,
+      },
+      { pagesRead: 1, chaptersRead: 1 }
+    ).sort({ date: 1 });
+
+    const totalPagesRead = readingSessions.reduce(
+      (sum, session) => sum + session.pagesRead,
+      0
+    );
+    const totalChaptersRead = readingSessions.reduce(
+      (sum, session) => sum + session.chaptersRead,
+      0
+    );
+
+    const pagePercentage =
+      book.pages > 0 ? Math.round((totalPagesRead / book.pages) * 100) : 0;
+    const chapterPercentage =
+      book.chapters > 0
+        ? Math.round((totalChaptersRead / book.chapters) * 100)
+        : 0;
+
     const analytics = {
       bookTitle: book.title,
-      completionPercentage: book.completionPercentage,
+      completionPercentage: Math.max(pagePercentage, chapterPercentage),
       byPages: {
-        current: book.currentPage,
+        current: totalPagesRead,
         total: book.pages,
-        percentage:
-          book.pages > 0
-            ? Math.round((book.currentPage / book.pages) * 100)
-            : 0,
+        percentage: pagePercentage,
       },
       byChapters: {
-        current: book.currentChapter,
-        total: book.totalChapters,
-        percentage:
-          book.totalChapters > 0
-            ? Math.round((book.currentChapter / book.totalChapters) * 100)
-            : 0,
+        current: totalChaptersRead,
+        total: book.chapters,
+        percentage: chapterPercentage,
       },
       recommendedMetric: book.pages > 0 ? "pages" : "chapters",
     };

@@ -7,7 +7,7 @@ const baseMediaSchema = new mongoose.Schema({
   },
   title: {
     type: String,
-    required: true,
+  //  required: true,
     trim: true
   },
   genre: [String],
@@ -59,7 +59,7 @@ baseMediaSchema.methods.updateStatus = function() {
       this.timeline.timeSpent = (this.timeline.completedAt - this.timeline.startedAt) / (1000 * 60 * 60);
     }
   } else if (this.completionPercentage > 0 && this.status === "Planned") {
-    this.status = "In Progress";
+    this.status = "In-Progress";
     if (!this.timeline.startedAt) {
       this.timeline.startedAt = new Date();
     }

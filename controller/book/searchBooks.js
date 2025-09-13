@@ -20,7 +20,7 @@ export const searchBooks = async (req, res) => {
     res.json({
       query: search,
       count: bookSearch.length,
-      bookSearch
+      results: bookSearch
     });
   } catch (error) {
     console.error('Failed searching book:', error.message);

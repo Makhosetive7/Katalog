@@ -2,9 +2,7 @@ import express from "express";
 import cors from "cors";
 import connectDB from "./config/database.js";
 import dotenv from "dotenv";
-import bookRoutes from "./routes/book/bookRoutes.js";
-import gameRoutes from "./routes/game/gameRoutes.js";
-import tvShowRoutes from "./routes/tvShow/tvShowRoutes.js";
+import bookRoutes from "./routes/book/bookRoutes.js";;
 
 dotenv.config();
 
@@ -14,8 +12,6 @@ app.use(cors());
 const PORT = process.env.PORT || 5000;
 
 app.use("/api/books", bookRoutes);
-app.use("/api/games", gameRoutes);
-app.use("/api/tvShow", tvShowRoutes);
 
 const startServer = async () => {
   try {

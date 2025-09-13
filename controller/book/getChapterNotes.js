@@ -1,21 +1,20 @@
+import ChapterNote from "../../model/chapterNote.js";
 import Book from "../../model/book.js";
 
 export const getChapterNotes = async (req, res) => {
   try {
-    const {id} = req.params;
+    const { bookId } = req.params;
 
-    const book = await Book.findOne({_id: id }, { chapterNotes: 1, title: 1 });
-
-    if (!book) {
-      return res.status(404).json({ error: "Book not found" });
-    }
+    // Get all notes for this book
+    const note = await ChapterNote.find({ book: bookId })
+      .sort({ chapter: 1, createdAt: -1 });
 
     res.json({
-      bookTitle: book.title,
-      chapterNotes: book.chapterNotes.sort((a, b) => a.chapter - b.chapter),
+      note,
+      count: note.length,
     });
   } catch (error) {
-    console.error("Failed get chapter notes", error.message);
+    console.error("Failed to get chapter note:", error.message);
     res.status(500).json({ error: "Server error" });
   }
 };

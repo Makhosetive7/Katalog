@@ -12,8 +12,22 @@ import {
   updateReadingProgress,
   getChapterNotes,
   getAllBooksProgress,
-  getProgressAnalytics
+  getProgressAnalytics,
+  createReadingSession,
+  getBookReadingSessions,
+  getReadingStatistics,
+  deleteReadingSession,
+  updateChapterNote,
+  deleteChapterNote,
+  createReadingGoal,
+  getBookGoals,
+  checkAllGoals,
+  getGoalStatistics,
+  updateReadingGoal,
+  deleteReadingGoal,
+  checkGoalProgress,
 } from "../../controller/book/booksController.js";
+import { createChapterNote } from "../../controller/book/createChapterNotes.js";
 
 const router = express.Router();
 
@@ -457,9 +471,27 @@ router.put("/updateBook/:id", updateBook);
  *         description: Server error
  */
 router.delete("/deleteBook/:id", deleteBook);
-router.put('/:id/progress', updateReadingProgress);
-router.get('/:id/notes', getChapterNotes);
-router.get('/:id/analytics', getProgressAnalytics);
-router.get('/progress/dashboard', getAllBooksProgress);
+router.put("/:id/progress", updateReadingProgress);
+router.get("/:id/notes", getChapterNotes);
+router.get("/:id/analytics", getProgressAnalytics);
+router.get("/progress/dashboard", getAllBooksProgress);
+
+router.post("/:bookId/sessions", createReadingSession);
+router.get("/:bookId/sessions", getBookReadingSessions);
+router.get("/:bookId/reading-stats", getReadingStatistics);
+router.delete("/sessions/:sessionId", deleteReadingSession);
+
+router.post("/:bookId/notes", createChapterNote);
+router.get("/:bookId/notes", getChapterNotes);
+router.put("/notes/:noteId", updateChapterNote);
+router.delete("/notes/:noteId", deleteChapterNote);
+
+router.post("/:bookId/goals", createReadingGoal);
+router.get("/:bookId/goals", getBookGoals);
+router.get("/goals/check", checkAllGoals);
+router.get("/goals/stats", getGoalStatistics);
+router.get("/goals/:goalId/progress", checkGoalProgress);
+router.put("/goals/:goalId", updateReadingGoal);
+router.delete("/goals/:goalId", deleteReadingGoal);
 
 export default router;

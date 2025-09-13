@@ -1,16 +1,19 @@
 import Book from "../../model/book.js";
+import ReadingSession from "../../model/readingSession.js"
+import ChapterNote from "../../model/chapterNote.js"
 
 export const updateReadingProgress = async (req, res) => {
   try {
     const { currentPage, currentChapter, note, status } = req.body;
     const bookId = req.params.id;
+    const userId = req.user.id;
 
     const book = await Book.findById(bookId);
     if (!book) return res.status(404).json({ message: "Book not found" });
 
     let pagesRead = 0;
+    let newReadingSession = null;
 
-    // --- Update Pages ---
     if (currentPage !== undefined) {
       if (currentPage > book.pages) {
         return res.status(400).json({
@@ -21,27 +24,20 @@ export const updateReadingProgress = async (req, res) => {
       if (currentPage > book.currentPage) {
         pagesRead = currentPage - book.currentPage;
 
-        // Push to readingTimeline
-        const today = new Date().toISOString().split("T")[0];
-        const existingEntry = book.readingTimeline.find(
-          (entry) => entry.date.toISOString().split("T")[0] === today
-        );
-
-        if (existingEntry) {
-          existingEntry.pagesRead += pagesRead;
-        } else {
-          book.readingTimeline.push({
-            date: new Date(),
-            pagesRead,
-            chapter: currentChapter || book.currentChapter,
-          });
-        }
+        newReadingSession = new ReadingSession({
+          user: userId,
+          book: bookId,
+          date: new Date(),
+          pagesRead: pagesRead,
+          chapter: currentChapter || book.currentChapter,
+          readingTime: 0
+        });
+        await newReadingSession.save();
       }
 
       book.currentPage = currentPage;
     }
 
-    // --- Update Chapters ---
     if (currentChapter !== undefined) {
       if (currentChapter > book.chapters) {
         return res.status(400).json({
@@ -51,20 +47,29 @@ export const updateReadingProgress = async (req, res) => {
       book.currentChapter = currentChapter;
     }
 
-    // --- Update Notes ---
     if (note && currentChapter !== undefined) {
-      const existingNote = book.chapterNotes.find(
-        (n) => n.chapter === currentChapter
-      );
+      const existingNote = await ChapterNote.findOne({
+        user: userId,
+        book: bookId,
+        chapter: currentChapter
+      });
+
       if (existingNote) {
         existingNote.note = note;
-        existingNote.createdAt = new Date();
+        existingNote.updatedAt = new Date();
+        await existingNote.save();
       } else {
-        book.chapterNotes.push({ chapter: currentChapter, note });
+        const newChapterNote = new ChapterNote({
+          user: userId,
+          book: bookId,
+          chapter: currentChapter,
+          note: note,
+          isPublic: false
+        });
+        await newChapterNote.save();
       }
     }
 
-    // --- Update Completion ---
     if (book.pages > 0) {
       book.completionPercentage = Math.round(
         (book.currentPage / book.pages) * 100
@@ -76,7 +81,6 @@ export const updateReadingProgress = async (req, res) => {
     }
     book.completionPercentage = Math.min(book.completionPercentage, 100);
 
-    // --- Update Status ---
     if (status) {
       book.status = status;
     } else {
@@ -95,9 +99,10 @@ export const updateReadingProgress = async (req, res) => {
       message: "Progress updated successfully",
       book: updatedBook,
       completionPercentage: updatedBook.completionPercentage,
+      latestSession: newReadingSession
     });
   } catch (error) {
-    console.error("❌ Failed updating reading progress:", error.message);
+    console.error("Failed updating reading progress:", error.message);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };

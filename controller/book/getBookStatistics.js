@@ -3,7 +3,7 @@ import Book from "../../model/book.js";
 export const getBookStatistics = async (req, res) => {
   try {
     const statistics = await Book.aggregate([
-      { $match: { user: req.user._id } },
+      { $match: { user: new mongoose.Types.ObjectId(req.user.id) } }, 
       {
         $group: {
           _id: null,
