@@ -25,6 +25,7 @@ import { getGoalStatistics } from "./getGoalStatistics.js";
 import { updateReadingGoal } from "./updateReadingGoal.js";
 import { deleteReadingGoal } from "./deleteReadingGoal.js";
 import { checkGoalProgress } from "./checkGoalProgress.js";
+import { getAllNotesGrouped } from "./getUserNotes.js";
 
 export {
   getBookStatistics,
@@ -54,4 +55,5 @@ export {
   updateReadingGoal,
   deleteReadingGoal,
   checkGoalProgress,
+  getAllNotesGrouped
 };

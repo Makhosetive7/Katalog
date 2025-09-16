@@ -26,6 +26,7 @@ import {
   updateReadingGoal,
   deleteReadingGoal,
   checkGoalProgress,
+  getAllNotesGrouped
 } from "../../controller/book/booksController.js";
 import { createChapterNote } from "../../controller/book/createChapterNotes.js";
 
@@ -473,6 +474,7 @@ router.put("/updateBook/:id", updateBook);
 router.delete("/deleteBook/:id", deleteBook);
 router.put("/:id/progress", updateReadingProgress);
 router.get("/:id/notes", getChapterNotes);
+router.get("/notes/grouped", getAllNotesGrouped);
 router.get("/:id/analytics", getProgressAnalytics);
 router.get("/progress/dashboard", getAllBooksProgress);
 
