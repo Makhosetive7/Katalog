@@ -44,10 +44,7 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/books", bookRoutes);
-app.use("/api/email", emailRoutes);
-app.use("/api/profile", profileRoutes);
+app.use("/api/books", bookRoutes, authRoutes, emailRoutes, profileRoutes);
 
 app.get("/health", (req, res) => {
   res.status(200).json({
@@ -67,7 +64,10 @@ app.use((error, req, res, next) => {
   console.error("Error:", error);
   res.status(500).json({
     message: "Internal server error",
-    error: process.env.NODE_ENV === "development" ? error.message : "Something went wrong",
+    error:
+      process.env.NODE_ENV === "development"
+        ? error.message
+        : "Something went wrong",
   });
 });
 

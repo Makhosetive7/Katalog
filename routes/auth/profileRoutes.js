@@ -9,8 +9,8 @@ import { validateProfileUpdate } from "../../middleware/validation/validationMid
 
 const router = express.Router();
 
-router.get("/me", protect, getProfile);
-router.put("/profile", protect, validateProfileUpdate, updateProfile);
+router.get("/myProfile", protect, getProfile);
+router.put("/updateProfile", protect, validateProfileUpdate, updateProfile);
 router.put("/change-password", protect, changePassword);
 
 export default router;

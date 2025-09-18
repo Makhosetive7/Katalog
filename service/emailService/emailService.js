@@ -5,7 +5,7 @@ const createTransporter = () => {
 
   if (EMAIL_SERVICE === "gmail") {
     return nodemailer.createTransport({
-      service: "gmail", // always lowercase
+      service: "gmail", 
       auth: {
         user: EMAIL_USER,
         pass: EMAIL_PASS,
@@ -41,10 +41,10 @@ export const testEmailConnection = async () => {
   try {
     const transporter = createTransporter();
     await transporter.verify();
-    console.log("✅ Email server is ready to send messages");
+    console.log("Email server is ready to send messages");
     return true;
   } catch (error) {
-    console.error("❌ Email connection failed:", error.message);
+    console.error("Email connection failed:", error.message);
     return false;
   }
 };
@@ -52,7 +52,8 @@ export const testEmailConnection = async () => {
 export const sendVerificationEmail = async (user, token) => {
   try {
     const transporter = createTransporter();
-    const verificationUrl = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
+   const verificationUrl = `${process.env.CLIENT_URL}/auth/verify-email?token=${token}`;
+
 
     const mailOptions = {
       from: process.env.EMAIL_FROM,
@@ -70,10 +71,10 @@ export const sendVerificationEmail = async (user, token) => {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log("✅ Verification email sent:", info.messageId);
+    console.log("Verification email sent:", info.messageId);
     return true;
   } catch (error) {
-    console.error("❌ Error sending verification email:", error.message);
+    console.error("Error sending verification email:", error.message);
     return false;
   }
 };
@@ -99,9 +100,9 @@ export const sendPasswordResetEmail = async (user, token) => {
     };
 
     await transporter.sendMail(mailOptions);
-    console.log("✅ Password reset email sent:", user.email);
+    console.log("Password reset email sent:", user.email);
   } catch (error) {
-    console.error("❌ Error sending reset email:", error.message);
+    console.error("Error sending reset email:", error.message);
   }
 };
 
@@ -127,8 +128,8 @@ export const sendWelcomeEmail = async (user) => {
     };
 
     await transporter.sendMail(mailOptions);
-    console.log("✅ Welcome email sent:", user.email);
+    console.log("Welcome email sent:", user.email);
   } catch (error) {
-    console.error("❌ Error sending welcome email:", error.message);
+    console.error("Error sending welcome email:", error.message);
   }
 };
