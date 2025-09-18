@@ -1,4 +1,4 @@
-import ChapterNote from "../../model/chapterNote.js"
+import ChapterNote from "../../model/chapterNote.js";
 import Book from "../../model/book.js";
 
 export const updateChapterNote = async (req, res) => {

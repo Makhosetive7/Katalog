@@ -26,7 +26,13 @@ import {
   updateReadingGoal,
   deleteReadingGoal,
   checkGoalProgress,
-  getAllNotesGrouped
+  getAllNotesGrouped,
+  setReadingChallenge,
+  getReadingChallenge,
+  getChallengeProgress,
+  getReadingStreak,
+  getUserAchievements,
+  getReadingTimeline,
 } from "../../controller/book/booksController.js";
 import { createChapterNote } from "../../controller/book/createChapterNotes.js";
 
@@ -228,7 +234,7 @@ router.get("/search", searchBooks);
  *       500:
  *         description: Server error
  */
-router.get("/statistics", getBookStatistics);
+router.get("/:bookId/statistics", getBookStatistics);
 
 /**
  * @swagger
@@ -480,7 +486,7 @@ router.get("/progress/dashboard", getAllBooksProgress);
 
 router.post("/:bookId/sessions", createReadingSession);
 router.get("/:bookId/sessions", getBookReadingSessions);
-router.get("/:bookId/reading-stats", getReadingStatistics);
+router.get("/reading-stats", getReadingStatistics);
 router.delete("/sessions/:sessionId", deleteReadingSession);
 
 router.post("/:bookId/notes", createChapterNote);
@@ -495,5 +501,14 @@ router.get("/goals/stats", getGoalStatistics);
 router.get("/goals/:goalId/progress", checkGoalProgress);
 router.put("/goals/:goalId", updateReadingGoal);
 router.delete("/goals/:goalId", deleteReadingGoal);
+
+router.post("/readingChallenge", setReadingChallenge);
+router.get("/readingChallenge", getReadingChallenge);
+router.get("/progress", getChallengeProgress);
+
+router.get("/readingStreak", getReadingStreak);
+
+router.get("/userAchievements", getUserAchievements);
+router.get("/timeline", getReadingTimeline);
 
 export default router;

@@ -1,19 +1,20 @@
+// controllers/readingSessionController.js - UPDATED
 import ReadingSession from "../../model/readingSession.js";
 import Book from "../../model/book.js";
 import ReadingGoal from "../../model/readingGoals.js";
-import { checkGoalProgress } from "./booksController.js";
 import { calculateGoalProgress } from "./calculateReadingProgress.js";
+import { updateReadingStreak } from "./updateReadingStreak.js";
 
-
-// In createReadingSession controller
 export const createReadingSession = async (req, res) => {
   try {
     const { bookId } = req.params;
     const { pagesRead, chaptersRead, readingTime, mood, date } = req.body;
-    // const userId = req.user.id;
+    //   const userId = req.user.id;
 
     if (!pagesRead && !chaptersRead) {
-      return res.status(400).json({ error: "Pages read or chapters read is required" });
+      return res
+        .status(400)
+        .json({ error: "Pages read or chapters read is required" });
     }
 
     const book = await Book.findById(bookId);
@@ -22,7 +23,7 @@ export const createReadingSession = async (req, res) => {
     }
 
     const readingSession = new ReadingSession({
-      // user: userId,
+      //   user: userId,
       book: bookId,
       pagesRead: pagesRead || 0,
       chaptersRead: chaptersRead || 0,
@@ -32,6 +33,10 @@ export const createReadingSession = async (req, res) => {
     });
 
     await readingSession.save();
+
+    // NEW: Update reading streak
+    await updateReadingStreak();
+    // userId
 
     // Update book progress
     if (pagesRead > 0 || chaptersRead > 0) {
@@ -43,13 +48,12 @@ export const createReadingSession = async (req, res) => {
 
     try {
       const activeGoals = await ReadingGoal.find({
-        // user: userId,
+        //   user: userId,
         book: bookId,
         completed: false,
       });
 
       for (const goal of activeGoals) {
-        // Use the helper function instead of the controller
         await calculateGoalProgress(goal._id);
       }
     } catch (goalError) {

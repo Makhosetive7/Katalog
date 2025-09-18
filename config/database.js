@@ -1,17 +1,18 @@
 import mongoose from "mongoose";
+import { config } from "./config.js";
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URL, {
+    await mongoose.connect(config.mongoUrl, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    console.log("MongoDB connected");
- 
+    console.log("MongoDB connected successfully");
   } catch (error) {
-    console.error("MongoDB connection failed:", error.message);
+    console.error("MongoDB connection error:", error.message);
     process.exit(1);
   }
 };
+
 
 export default connectDB;

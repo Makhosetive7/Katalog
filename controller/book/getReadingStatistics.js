@@ -1,57 +1,116 @@
-import ReadingSession from "../../model/readingSession.js"
 import Book from "../../model/book.js";
+import ReadingChallenge from "../../model/readingChallange.js";
+import ReadingStreak from "../../model/readingStreak.js";
+import Achievement from "../../model/readingAchiervements.js";
+import ReadingSession from "../../model/readingSession.js";
 import mongoose from "mongoose";
 
 export const getReadingStatistics = async (req, res) => {
   try {
-    const { bookId } = req.params;
-    //const userId = req.user.id;
+    // const userId = req.user.id;
+    const currentYear = new Date().getFullYear();
 
-    const stats = await ReadingSession.aggregate([
+    const [
+      totalBooks,
+      completedBooks,
+      readingChallenge,
+      readingStreak,
+      achievements,
+      totalReadingSessions,
+      recentBooks,
+    ] = await Promise.all([
+      Book.countDocuments({
+        // user: userId,
+      }),
+      Book.countDocuments({
+        // user: userId,
+        status: "Completed",
+      }),
+      ReadingChallenge.findOne({
+        // user: userId,
+        year: currentYear,
+      }),
+      ReadingStreak.findOne({
+        // user: userId,
+      }),
+      Achievement.countDocuments({
+        // user: userId
+      }),
+      ReadingSession.countDocuments({
+        // user: userId,
+      }),
+      Book.find({
+        // user: userId,
+      })
+        .sort({ updatedAt: -1 })
+        .limit(5)
+        .select("title author coverImage status completionPercentage"),
+    ]);
+
+    const readingTimeStats = await ReadingSession.aggregate([
       {
         $match: {
-      //    user: new mongoose.Types.ObjectId(userId),
-          book: new mongoose.Types.ObjectId(bookId),
+          // user: new mongoose.Types.ObjectId(userId),
         },
       },
       {
         $group: {
           _id: null,
-          totalSessions: { $sum: 1 },
-          totalPagesRead: { $sum: "$pagesRead" },
-          totalChaptersRead: { $sum: "$chaptersRead" },
           totalReadingTime: { $sum: "$readingTime" },
-          avgPagesPerSession: { $avg: "$pagesRead" },
           avgReadingTime: { $avg: "$readingTime" },
-          moodDistribution: { $push: "$mood" },
+          totalSessions: { $sum: 1 },
         },
       },
     ]);
 
-    const result = stats[0] || {
-      totalSessions: 0,
-      totalPagesRead: 0,
-      totalChaptersRead: 0,
+    const readingTimeData = readingTimeStats[0] || {
       totalReadingTime: 0,
-      avgPagesPerSession: 0,
       avgReadingTime: 0,
-      moodDistribution: [],
+      totalSessions: 0,
     };
 
-    const moodCounts = {};
-    result.moodDistribution.forEach((mood) => {
-      if (mood) {
-        moodCounts[mood] = (moodCounts[mood] || 0) + 1;
-      }
-    });
+    const stats = {
+      overview: {
+        totalBooks,
+        completedBooks,
+        inProgressBooks: totalBooks - completedBooks,
+        totalReadingSessions,
+        totalReadingHours: (readingTimeData.totalReadingTime / 60).toFixed(1),
+        avgSessionMinutes: readingTimeData.avgReadingTime.toFixed(1),
+      },
+      readingChallenge: readingChallenge
+        ? {
+            goal: readingChallenge.goal,
+            current: readingChallenge.currentCount,
+            percentage: Math.round(
+              (readingChallenge.currentCount / readingChallenge.goal) * 100
+            ),
+            completed: readingChallenge.completed,
+            booksLeft: readingChallenge.goal - readingChallenge.currentCount,
+          }
+        : null,
+      readingStreak: readingStreak
+        ? {
+            current: readingStreak.currentStreak,
+            longest: readingStreak.longestStreak,
+            lastReadingDate: readingStreak.lastReadingDate,
+          }
+        : { current: 0, longest: 0, lastReadingDate: null },
+      achievements: {
+        count: achievements,
+        recent: await Achievement.find({
+          // user: userId
+        })
+          .sort({ earnedAt: -1 })
+          .limit(3)
+          .select("title level earnedAt"),
+      },
+      recentBooks,
+    };
 
-    res.json({
-      ...result,
-      moodCounts,
-      totalReadingHours: (result.totalReadingTime / 60).toFixed(1),
-    });
+    res.json(stats);
   } catch (error) {
-    console.error("Failed to get reading statistics:", error.message);
-    res.status(500).json({ error: "Server error" });
+    console.log("Failed getting user reading stats");
+    res.status(500).json({ message: error.message });
   }
 };

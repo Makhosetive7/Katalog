@@ -7,7 +7,6 @@ const baseMediaSchema = new mongoose.Schema({
   },
   title: {
     type: String,
-  //  required: true,
     trim: true
   },
   genre: [String],
@@ -48,6 +47,27 @@ baseMediaSchema.virtual('progress').get(function() {
     percentage: this.completionPercentage,
     status: this.status
   };
+});
+
+// Virtual for reading sessions
+baseMediaSchema.virtual('readingSessions', {
+  ref: 'ReadingSession',
+  localField: '_id',
+  foreignField: 'book'
+});
+
+// Virtual for chapter notes
+baseMediaSchema.virtual('chapterNotes', {
+  ref: 'ChapterNote',
+  localField: '_id',
+  foreignField: 'book'
+});
+
+// Virtual for reading goals
+baseMediaSchema.virtual('readingGoals', {
+  ref: 'ReadingGoal',
+  localField: '_id',
+  foreignField: 'book'
 });
 
 // Method to update status based on completion

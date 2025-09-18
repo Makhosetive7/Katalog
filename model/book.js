@@ -4,16 +4,14 @@ import baseMedia from "./baseMedia.js";
 const bookSchema = new mongoose.Schema({
   author: {
     type: String,
-      required: true,
+    required: true,
   },
   pages: {
     type: Number,
-    // required: true,
     min: 1,
   },
   chapters: {
     type: Number,
-    // required: true,
     min: 1,
   },
   currentChapter: {
@@ -26,14 +24,12 @@ const bookSchema = new mongoose.Schema({
     min: 0,
     default: 0,
   },
-
   readingGoal: {
     targetPages: { type: Number, default: 0 },
     targetChapters: { type: Number, default: 0 },
     deadline: { type: Date },
     completed: { type: Boolean, default: false },
   },
-
   readingVelocity: {
     avgPagesPerDay: { type: Number, default: 0 },
     lastUpdated: { type: Date, default: Date.now },

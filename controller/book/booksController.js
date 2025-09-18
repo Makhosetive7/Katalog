@@ -26,6 +26,17 @@ import { updateReadingGoal } from "./updateReadingGoal.js";
 import { deleteReadingGoal } from "./deleteReadingGoal.js";
 import { checkGoalProgress } from "./checkGoalProgress.js";
 import { getAllNotesGrouped } from "./getUserNotes.js";
+import { setReadingChallenge } from "./createReadingChallenge.js";
+import { getReadingChallenge } from "./getReadingChallenge.js";
+import { getChallengeProgress } from "./getchallengeProgress.js";
+import { updateReadingStreak } from "./updateReadingStreak.js";
+import { checkStreakAchievements } from "./checkStreakAchievements.js";
+import { getReadingStreak } from "./getReadingStreak.js";
+import { getUserAchievements } from "./getUserAchievements.js";
+import { checkBookAchievements } from "./checkBookAchievements.js";
+import { checkGenreAchievement } from "./checkGenreAchievement.js";
+import { checkChallengeAchievement } from "./checkChallengeAchievement.js";
+import {getReadingTimeline} from "./getReadingTimeline.js"
 
 export {
   getBookStatistics,
@@ -55,5 +66,16 @@ export {
   updateReadingGoal,
   deleteReadingGoal,
   checkGoalProgress,
-  getAllNotesGrouped
+  getAllNotesGrouped,
+  setReadingChallenge,
+  getReadingChallenge,
+  getChallengeProgress,
+  updateReadingStreak,
+  checkStreakAchievements,
+  getReadingStreak,
+  getUserAchievements,
+  checkBookAchievements,
+  checkGenreAchievement,
+  checkChallengeAchievement,
+  getReadingTimeline
 };

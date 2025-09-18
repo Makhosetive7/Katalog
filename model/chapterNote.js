@@ -4,7 +4,6 @@ const chapterNoteSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    //required: true,
   },
   book: {
     type: mongoose.Schema.Types.ObjectId,
@@ -25,4 +24,5 @@ const chapterNoteSchema = new mongoose.Schema({
 
 chapterNoteSchema.index({ user: 1, book: 1, chapter: 1 });
 
+// Fixed export to use proper case
 export default mongoose.model("ChapterNote", chapterNoteSchema);

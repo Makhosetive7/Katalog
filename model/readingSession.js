@@ -4,7 +4,6 @@ const readingSessionSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    //required: true,
   },
   book: {
     type: mongoose.Schema.Types.ObjectId,
@@ -45,4 +44,4 @@ const readingSessionSchema = new mongoose.Schema({
 
 readingSessionSchema.index({ user: 1, book: 1, date: -1 });
 
-export default mongoose.model("readingSession", readingSessionSchema)
+export default mongoose.model("ReadingSession", readingSessionSchema);

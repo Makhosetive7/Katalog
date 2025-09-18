@@ -1,36 +1,91 @@
 import express from "express";
 import cors from "cors";
-import connectDB from "./config/database.js";
 import dotenv from "dotenv";
-import bookRoutes from "./routes/book/bookRoutes.js";;
+import helmet from "helmet";
+import morgan from "morgan";
+import connectDB from "./config/database.js";
+import { testEmailConnection } from "./service/emailService/emailService.js";
+
+import bookRoutes from "./routes/book/bookRoutes.js";
+import authRoutes from "./routes/auth/authRoutes.js";
+import emailRoutes from "./routes/auth/emailRoutes.js";
+import profileRoutes from "./routes/auth/profileRoutes.js";
 
 dotenv.config();
-
 const app = express();
-app.use(express.json());
-app.use(cors());
-const PORT = process.env.PORT || 5000;
 
+// Debugging middleware
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  next();
+});
+
+// Error handling for unhandled rejections & uncaught exceptions
+process.on("unhandledRejection", (err) => {
+  console.error("❌ Unhandled Promise Rejection:", err);
+  process.exit(1);
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("❌ Uncaught Exception:", err);
+  process.exit(1);
+});
+
+// Middleware
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    credentials: true,
+  })
+);
+app.use(helmet());
+app.use(morgan("combined"));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
+
+// Routes
+app.use("/api/auth", authRoutes);
 app.use("/api/books", bookRoutes);
+app.use("/api/email", emailRoutes);
+app.use("/api/profile", profileRoutes);
 
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "OK",
+    message: "Server is running",
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ message: "Not Found" });
+});
+
+// Error handler
+app.use((error, req, res, next) => {
+  console.error("Error:", error);
+  res.status(500).json({
+    message: "Internal server error",
+    error: process.env.NODE_ENV === "development" ? error.message : "Something went wrong",
+  });
+});
+
+// Start server
 const startServer = async () => {
   try {
     await connectDB();
+    await testEmailConnection();
+
+    const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
+      console.log(`✅ Server running on http://localhost:${PORT}`);
     });
   } catch (error) {
-    console.error("Failed to connect to the database:", error.message);
+    console.error("❌ Failed to start server:", error.message);
     process.exit(1);
   }
 };
-
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    credentials: true, 
-  })
-);
 
 startServer();
 
