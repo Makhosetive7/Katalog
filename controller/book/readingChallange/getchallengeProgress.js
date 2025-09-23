@@ -1,6 +1,6 @@
 import ReadingChallenge from "../../../model/readingChallange.js";
 
-export const getChallengeProgress = async () => {
+export const getChallengeProgress = async (req, res) => {
   try {
     const year = parseInt(req.query.year) || new Date().getFullYear();
     const challenge = await ReadingChallenge.findOne({

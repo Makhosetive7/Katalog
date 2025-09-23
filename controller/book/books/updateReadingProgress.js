@@ -10,7 +10,7 @@ export const updateReadingProgress = async (req, res) => {
   try {
     const { currentPage, currentChapter, note, status } = req.body;
     const bookId = req.params.id;
- //   const userId = req.user.id;
+    const userId = req.user.id;
 
     const book = await Book.findById(bookId);
     if (!book) return res.status(404).json({ message: "Book not found" });
@@ -29,7 +29,7 @@ export const updateReadingProgress = async (req, res) => {
         pagesRead = currentPage - book.currentPage;
 
         newReadingSession = new ReadingSession({
-      //    user: userId,
+          user: userId,
           book: bookId,
           date: new Date(),
           pagesRead: pagesRead,
@@ -53,7 +53,7 @@ export const updateReadingProgress = async (req, res) => {
 
     if (note && currentChapter !== undefined) {
       const existingNote = await ChapterNote.findOne({
-    //    user: userId,
+        user: userId,
         book: bookId,
         chapter: currentChapter,
       });
@@ -64,7 +64,7 @@ export const updateReadingProgress = async (req, res) => {
         await existingNote.save();
       } else {
         const newChapterNote = new ChapterNote({
-      //    user: userId,
+          user: userId,
           book: bookId,
           chapter: currentChapter,
           note: note,
@@ -85,10 +85,7 @@ export const updateReadingProgress = async (req, res) => {
     }
     book.completionPercentage = Math.min(book.completionPercentage, 100);
 
-    // NEW: Update reading streak
-    await updateReadingStreak(
-    //  userId
-    );
+    await updateReadingStreak(userId);
 
     if (status) {
       book.status = status;
@@ -97,13 +94,10 @@ export const updateReadingProgress = async (req, res) => {
         book.status = "Completed";
         book.timeline.completedAt = new Date();
 
-        // NEW: Check achievements and update challenge
-        await checkBookAchievements(
-        //  userId,
-           bookId);
+        await checkBookAchievements(userId, bookId);
 
         const challenge = await ReadingChallenge.findOne({
-       //   user: userId,
+          user: userId,
           year: new Date().getFullYear(),
         });
 
@@ -114,9 +108,7 @@ export const updateReadingProgress = async (req, res) => {
           if (challenge.currentCount >= challenge.goal) {
             challenge.completed = true;
             challenge.completedDate = new Date();
-            await checkChallengeAchievement(
-       //       userId,
-               challenge._id);
+            await checkChallengeAchievement(userId, challenge._id);
           }
 
           await challenge.save();

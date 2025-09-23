@@ -7,7 +7,7 @@ export const deleteReadingGoal = async (req, res) => {
 
     const goal = await ReadingGoal.findOneAndDelete({
       _id: goalId,
-      //  user: userId
+       user: userId
     });
 
     if (!goal) {

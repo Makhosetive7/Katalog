@@ -1,12 +1,11 @@
 import ChapterNote from "../../../model/chapterNote.js";
 import Book from "../../../model/book.js";
 
-// Create a new chapter note
 export const createChapterNote = async (req, res) => {
   try {
     const { bookId } = req.params;
     const { chapter, note, isPublic = false, keywords = [] } = req.body;
-    //  const userId = req.user.id;
+    const userId = req.user.id;
 
     if (!chapter || !note) {
       return res.status(400).json({ error: "Chapter and note are required" });
@@ -18,7 +17,7 @@ export const createChapterNote = async (req, res) => {
     }
 
     const chapterNote = new ChapterNote({
-      //    user: userId,
+      user: userId,
       book: bookId,
       chapter: parseInt(chapter),
       note,

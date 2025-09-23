@@ -4,7 +4,7 @@ export const updateReadingGoal = async (req, res) => {
   try {
     const { goalId } = req.params;
     const { target, endDate } = req.body;
-    // const userId = req.params;
+    const userId = req.params;
 
     const updateData = {};
     if (target !== undefined) updateData.target = target;
@@ -13,7 +13,7 @@ export const updateReadingGoal = async (req, res) => {
     const goal = await ReadingGoal.findOneAndUpdate(
       {
         _id: goalId,
-        //   user: userId,
+        user: userId,
       },
       updateData,
       { new: true, runValidators: true }

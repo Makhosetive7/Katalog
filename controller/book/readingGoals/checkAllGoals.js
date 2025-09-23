@@ -4,10 +4,10 @@ import Book from "../../../model/book.js";
 
 export const checkAllGoals = async (req, res) => {
   try {
-    //   const { userId } = req.params;
+       const { userId } = req.params;
 
     const goals = await ReadingGoal.find({
-      // user: userId,
+       user: userId,
     }).populate("book");
     if (!goals.length) {
       return res.status(404).json({ error: "No goals found" });

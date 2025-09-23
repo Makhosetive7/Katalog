@@ -26,7 +26,7 @@ export const getProgressAnalytics = async (req, res) => {
     const readingSessions = await ReadingSession.find(
       {
         book: bookId,
-       // user: req.user.id,
+        user: req.user.id,
       },
       { pagesRead: 1, chaptersRead: 1 }
     ).sort({ date: 1 });

@@ -4,11 +4,11 @@ import Book from "../../../model/book.js";
 export const deleteChapterNote = async (req, res) => {
   try {
     const { noteId } = req.params;
-    // const userId = req.user.id;
+     const userId = req.user.id;
 
     const deletedNote = await ChapterNote.findOneAndDelete({
       _id: noteId,
-      // user: userId,
+       user: userId,
     });
 
     if (!deletedNote) {

@@ -5,12 +5,12 @@ import mongoose from "mongoose";
 export const  getBookStatistics = async (req, res) => {
   try {
     const { bookId } = req.params;
-   // const userId = req.user.id;
+    const userId = req.user.id;
 
     const stats = await ReadingSession.aggregate([
       {
         $match: {
-          //user: new mongoose.Types.ObjectId(userId),
+          user: new mongoose.Types.ObjectId(userId),
           book: new mongoose.Types.ObjectId(bookId),
         },
       },

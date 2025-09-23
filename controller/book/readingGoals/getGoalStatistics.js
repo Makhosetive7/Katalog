@@ -2,12 +2,12 @@ import ReadingGoal from "../../../model/readingGoals.js";
 
 export const getGoalStatistics = async (req, res) => {
   try {
-    //  const userId = req.params;
+    const userId = req.params;
 
     const stats = await ReadingGoal.aggregate([
       {
         $match: {
-          //user: mongoose.Types.ObjectId(userId),
+          user: mongoose.Types.ObjectId(userId),
         },
       },
       {

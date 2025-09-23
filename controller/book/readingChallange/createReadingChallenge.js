@@ -3,10 +3,10 @@ import ReadingChallenge from "../../../model/readingChallange.js";
 export const setReadingChallenge = async (req, res) => {
   try {
     const { goal, year = new Date().getFullYear() } = req.body;
-    // const userId = req.user.id;
+     const userId = req.user.id;
 
     let challenge = await ReadingChallenge.findOne({
-      // user: userId,
+       user: userId,
       year,
     });
 
@@ -15,7 +15,7 @@ export const setReadingChallenge = async (req, res) => {
       await challenge.save();
     } else {
       challenge = await ReadingChallenge.create({
-        // user: userId,
+         user: userId,
         year,
         goal,
       });

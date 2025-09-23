@@ -3,10 +3,10 @@ import ReadingGoal from "../../../model/readingGoals.js";
 export const getBookGoals = async (req, res) => {
   try {
     const { bookId } = req.params;
-    // const userId = req.params
+    const userId = req.params;
 
     const goals = await ReadingGoal.find({
-      //    user: userId,
+      user: userId,
       book: bookId,
     }).sort({ createdAt: -1 });
 

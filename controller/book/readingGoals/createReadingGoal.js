@@ -6,7 +6,7 @@ export const createReadingGoal = async (req, res) => {
   try {
     const { bookId } = req.params;
     const { type, target, timeframe, endDate } = req.body;
-    // const userId = req.user.id;
+    const userId = req.user.id;
 
     if (!type || !target || !endDate) {
       return res
@@ -20,7 +20,7 @@ export const createReadingGoal = async (req, res) => {
     }
 
     const readingGoal = new ReadingGoal({
-      // user: userId,
+       user: userId,
       book: bookId,
       type,
       target,

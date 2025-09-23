@@ -18,7 +18,6 @@ export const updateBook = async (req, res) => {
     if (rating !== undefined) updateBook.rating = parseFloat(rating);
     if (notes !== undefined) updateBook.notes = notes;
 
-    // Handle completion time tracking (this stays in Book model)
     if (status === "Completed" && updateBook.status !== "Completed") {
       updateBook.DateCompleted = new Date();
 

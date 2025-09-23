@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-import crypto from 'crypto';
-
+import crypto from "crypto";
 
 const userSchema = new mongoose.Schema(
   {
@@ -70,6 +69,34 @@ const userSchema = new mongoose.Schema(
     },
   }
 );
+
+userSchema.virtual("progress").get(function () {
+  return {
+    percentage: this.completionPercentage,
+    status: this.status,
+  };
+});
+
+// Virtual for reading sessions
+userSchema.virtual("readingSessions", {
+  ref: "ReadingSession",
+  localField: "_id",
+  foreignField: "book",
+});
+
+// Virtual for chapter notes
+userSchema.virtual("chapterNotes", {
+  ref: "ChapterNote",
+  localField: "_id",
+  foreignField: "book",
+});
+
+// Virtual for reading goals
+userSchema.virtual("readingGoals", {
+  ref: "ReadingGoal",
+  localField: "_id",
+  foreignField: "book",
+});
 
 // Hash password before saving
 userSchema.pre("save", async function (next) {

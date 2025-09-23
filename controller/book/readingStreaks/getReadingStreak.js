@@ -3,7 +3,7 @@ import ReadingStreak from "../../../model/readingStreak.js";
 export const getReadingStreak = async (req, res) => {
   try {
     const streak = await ReadingStreak.findOne({
-      // user: req.user.id
+      user: req.user.id,
     });
 
     if (!streak) {

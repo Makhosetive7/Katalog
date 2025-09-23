@@ -24,5 +24,4 @@ const chapterNoteSchema = new mongoose.Schema({
 
 chapterNoteSchema.index({ user: 1, book: 1, chapter: 1 });
 
-// Fixed export to use proper case
 export default mongoose.model("ChapterNote", chapterNoteSchema);

@@ -5,10 +5,10 @@ export const getBookReadingSessions = async (req, res) => {
   try {
     const { bookId } = req.params;
     const { startDate, endDate, limit = 50, page = 1 } = req.query;
-    // const userId = req.user.id;
+    const userId = req.user.id;
 
     const filter = {
-      //   user: userId,
+      user: userId,
       book: bookId,
     };
 

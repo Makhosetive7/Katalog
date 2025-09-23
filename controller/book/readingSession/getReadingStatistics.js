@@ -6,7 +6,7 @@ import ReadingSession from "../../../model/readingSession.js";
 
 export const getReadingStatistics = async (req, res) => {
   try {
-    // const userId = req.user.id;
+    const userId = req.user.id;
     const currentYear = new Date().getFullYear();
 
     const [
@@ -19,27 +19,27 @@ export const getReadingStatistics = async (req, res) => {
       recentBooks,
     ] = await Promise.all([
       Book.countDocuments({
-        // user: userId,
+        user: userId,
       }),
       Book.countDocuments({
-        // user: userId,
+        user: userId,
         status: "Completed",
       }),
       ReadingChallenge.findOne({
-        // user: userId,
+        user: userId,
         year: currentYear,
       }),
       ReadingStreak.findOne({
-        // user: userId,
+        user: userId,
       }),
       Achievement.countDocuments({
-        // user: userId
+        user: userId,
       }),
       ReadingSession.countDocuments({
-        // user: userId,
+        user: userId,
       }),
       Book.find({
-        // user: userId,
+        user: userId,
       })
         .sort({ updatedAt: -1 })
         .limit(5)
@@ -49,7 +49,7 @@ export const getReadingStatistics = async (req, res) => {
     const readingTimeStats = await ReadingSession.aggregate([
       {
         $match: {
-          // user: new mongoose.Types.ObjectId(userId),
+          user: new mongoose.Types.ObjectId(userId),
         },
       },
       {
@@ -98,7 +98,7 @@ export const getReadingStatistics = async (req, res) => {
       achievements: {
         count: achievements,
         recent: await Achievement.find({
-          // user: userId
+          user: userId,
         })
           .sort({ earnedAt: -1 })
           .limit(3)

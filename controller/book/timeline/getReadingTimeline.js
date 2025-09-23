@@ -3,14 +3,12 @@ import mongoose from "mongoose";
 
 export const getReadingTimeline = async (req, res) => {
   try {
-  //  const userId = req.user.id;
+    const userId = req.user.id;
     const { limit = 20 } = req.query;
 
     const timeline = await ReadingSession.aggregate([
       {
-        $match: { user: new mongoose.Types.ObjectId(
-        //  userId
-        ) },
+        $match: { user: new mongoose.Types.ObjectId(userId) },
       },
       {
         $lookup: {

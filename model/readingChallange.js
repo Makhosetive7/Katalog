@@ -4,7 +4,7 @@ const ReadingChallengeSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-   // required: true  
+    required: true  
   },
   year: {
     type: Number,
@@ -35,5 +35,4 @@ const ReadingChallengeSchema = new mongoose.Schema({
 
 ReadingChallengeSchema.index({ user: 1, year: 1 }, { unique: true });
 
-// Fixed export
 export default mongoose.model('ReadingChallenge', ReadingChallengeSchema);

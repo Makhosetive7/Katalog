@@ -8,7 +8,7 @@ export const createReadingSession = async (req, res) => {
   try {
     const { bookId } = req.params;
     const { pagesRead, chaptersRead, readingTime, mood, date } = req.body;
-    //   const userId = req.user.id;
+    const userId = req.user.id;
 
     if (!pagesRead && !chaptersRead) {
       return res
@@ -22,7 +22,7 @@ export const createReadingSession = async (req, res) => {
     }
 
     const readingSession = new ReadingSession({
-      //   user: userId,
+      user: userId,
       book: bookId,
       pagesRead: pagesRead || 0,
       chaptersRead: chaptersRead || 0,
@@ -33,11 +33,9 @@ export const createReadingSession = async (req, res) => {
 
     await readingSession.save();
 
-    // NEW: Update reading streak
     await updateReadingStreak();
-    // userId
+    userId;
 
-    // Update book progress
     if (pagesRead > 0 || chaptersRead > 0) {
       book.currentPage += pagesRead || 0;
       book.currentChapter += chaptersRead || 0;
@@ -47,7 +45,7 @@ export const createReadingSession = async (req, res) => {
 
     try {
       const activeGoals = await ReadingGoal.find({
-        //   user: userId,
+        user: userId,
         book: bookId,
         completed: false,
       });

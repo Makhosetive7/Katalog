@@ -3,7 +3,7 @@ import Achievement from "../../../model/readingAchiervements.js";
 export const getUserAchievements = async (req, res) => {
   try {
     const achievements = await Achievement.find({
-      //user: req.user.id
+      user: req.user.id,
     }).sort({
       earnedAt: -1,
     });

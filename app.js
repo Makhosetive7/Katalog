@@ -8,7 +8,7 @@ import { testEmailConnection } from "./service/emailService/emailService.js";
 
 import bookRoutes from "./routes/book/bookRoutes.js";
 import achievementsRoutes from "./routes/book/achievmentsRoutes.js";
-import challengeRoutes from "./routes/book/challengeRoutes,js";
+import challengeRoutes from "./routes/book/challengeRoutes.js";
 import goalRoutes from "./routes/book/goalRoutes.js";
 import notesRoutes from "./routes/book/notesRoutes.js";
 import sessionRoutes from "./routes/book/sessionRoutes.js";

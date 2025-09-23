@@ -4,7 +4,7 @@ const AchievementSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-   // required: true
+    required: true
   },
   type: {
     type: String,
@@ -37,5 +37,4 @@ const AchievementSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Fixed export
 export default mongoose.model('Achievement', AchievementSchema);

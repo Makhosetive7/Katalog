@@ -1,10 +1,10 @@
 import Achievement from "../../../model/readingAchiervements.js";
 import Book from "../../../model/book.js";
-import {checkGenreAchievement} from "./checkGenreAchievement.js";
+import { checkGenreAchievement } from "./checkGenreAchievement.js";
 
 export const checkBookAchievements = async (userId, bookId) => {
   const booksRead = await Book.countDocuments({
-    //  user: userId,
+    user: userId,
     status: "Completed",
   });
 
@@ -19,7 +19,7 @@ export const checkBookAchievements = async (userId, bookId) => {
   for (const achievement of bookAchievements) {
     if (booksRead === achievement.count) {
       const exists = await Achievement.findOne({
-        // user: userId,
+        user: userId,
         type: "books_read",
         "metadata.value": achievement.count,
       });
@@ -38,5 +38,5 @@ export const checkBookAchievements = async (userId, bookId) => {
   }
 
   await checkGenreAchievement();
-  //userId
+  userId;
 };

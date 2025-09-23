@@ -2,13 +2,12 @@ import express from "express";
 import {
   getReadingStreak,
   updateReadingStreak,
-  checkStreakAchievements,
 } from "../../controller/book/readingStreaks/streakController.js";
+import { protect } from "../../middleware/auth/protect.js";
 
 const router = express.Router();
 
-router.get("/readingStreak", getReadingStreak);
+router.get("/readingStreak", protect, getReadingStreak);
 router.put("/readingStreak", updateReadingStreak);
-router.get("/streakAchievements", checkStreakAchievements);
 
 export default router;

@@ -4,11 +4,11 @@ import mongoose from "mongoose";
 
 export const getAllBooksProgress = async (req, res) => {
   try {
-    // const userId = req.user.id;
+     const userId = req.user.id;
 
     const books = await Book.find(
       {
-        //  user: userId,
+          user: userId,
         status: { $in: ["In-Progress", "Completed", "Dropped"] },
       },
       {
@@ -27,7 +27,7 @@ export const getAllBooksProgress = async (req, res) => {
     const bookIds = books.map((book) => book._id);
     const readingSessions = await ReadingSession.find(
       {
-        // user: userId,
+         user: userId,
         book: { $in: bookIds },
       },
       { book: 1, pagesRead: 1, chaptersRead: 1, date: 1 }

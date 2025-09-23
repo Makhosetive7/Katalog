@@ -5,7 +5,7 @@ export const getReadingChallenge = async (req, res) => {
     const year = parseInt(req.query.year) || new Date().getFullYear();
 
     const challenge = await ReadingChallenge.findOne({
-     // user: req.user.id,
+      user: req.user.id,
       year,
     }).populate("books", "title coverImage");
 
