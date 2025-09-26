@@ -15,7 +15,7 @@ const router = express.Router();
 router.post("/:bookId/goals", protect, createReadingGoal);
 router.get("/:bookId/goals", protect, getBookGoals);
 router.get("/goals/check",protect, checkAllGoals);
-router.get("/goals/stats", protect, getGoalStatistics);
+router.get("/goals/stats",  getGoalStatistics);
 router.get("/goals/:goalId/progress", protect, checkGoalProgress);
 router.put("/goals/:goalId", protect, updateReadingGoal);
 router.delete("/goals/:goalId", protect, deleteReadingGoal);
