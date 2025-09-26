@@ -46,6 +46,11 @@ const readingGoalSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+      expires: 1800, // 30 minutes for demo users
+    },
   },
   {
     timestamps: true,

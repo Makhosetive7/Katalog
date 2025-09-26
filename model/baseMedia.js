@@ -5,7 +5,7 @@ const baseMediaSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: false,
     },
     title: {
       type: String,
@@ -35,6 +35,11 @@ const baseMediaSchema = new mongoose.Schema(
       min: 0,
       max: 100,
       default: 0,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+      expires: 1800, // 30 minutes for demo users
     },
   },
   {

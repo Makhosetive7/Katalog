@@ -1,6 +1,5 @@
-
-import jwt from 'jsonwebtoken';
-import User from '../../model/user/user.js';
+import jwt from "jsonwebtoken";
+import User from "../../model/user/user.js";
 
 export const optionalAuth = async (req, res, next) => {
   try {
@@ -21,9 +20,10 @@ export const optionalAuth = async (req, res, next) => {
         if (user) {
           req.userId = user._id;
           req.user = user;
+          req.isDemo = user.isDemo || false;
         }
       } catch (error) {
-        // Token is invalid but we continue without user
+        console.error("Invalid token:", error.message);
       }
     }
 

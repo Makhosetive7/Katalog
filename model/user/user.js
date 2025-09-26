@@ -54,6 +54,15 @@ const userSchema = new mongoose.Schema(
         default: "private",
       },
     },
+    isDemo: {
+      type: Boolean,
+      default: false,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+      expires: 1800, // 30 minutes for demo users
+    },
   },
   {
     timestamps: true,

@@ -30,6 +30,7 @@ export const protect = async (req, res, next) => {
 
       req.userId = user._id;
       req.user = user;
+      req.isDemo = user.isDemo || false;
       next();
     } catch (error) {
       return res.status(401).json({

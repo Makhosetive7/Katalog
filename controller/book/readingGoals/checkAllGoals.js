@@ -10,7 +10,7 @@ export const checkAllGoals = async (req, res) => {
        user: userId,
     }).populate("book");
     if (!goals.length) {
-      return res.status(404).json({ error: "No goals found" });
+      return res.status(404).json({ error: "No goals founddd" });
     }
 
     const now = new Date();

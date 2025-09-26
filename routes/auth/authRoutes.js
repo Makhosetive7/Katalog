@@ -3,13 +3,15 @@ import {
   register,
   login,
   logout,
+  demoLogIn,
 } from "../../controller/user/authController.js";
 import { authLimiter } from "../../middleware/rateLimiting/rateLimiting.js";
 
 const router = express.Router();
 
 router.post("/register", authLimiter, register);
-router.post("/login", authLimiter, login);  
+router.post("/demo", authLimiter, demoLogIn);
+router.post("/login", authLimiter, login);
 router.post("/logout", logout);
 
 export default router;

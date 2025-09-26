@@ -34,6 +34,7 @@ const bookSchema = new mongoose.Schema({
     avgPagesPerDay: { type: Number, default: 0 },
     lastUpdated: { type: Date, default: Date.now },
   },
+  
 });
 
 bookSchema.methods.updateCompletion = function () {

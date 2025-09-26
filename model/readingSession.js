@@ -41,6 +41,11 @@ const readingSessionSchema = new mongoose.Schema({
       "neutral",
     ],
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    expires: 1800, // 30 minutes for demo users
+  },
 });
 
 readingSessionSchema.index({ user: 1, book: 1, date: -1 });
