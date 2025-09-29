@@ -3,12 +3,13 @@ import mongoose from "mongoose";
 
 export const getGoalStatistics = async (req, res) => {
   try {
-    const {userId} = req.params;
+    const { userId, bookId } = req.params;
 
     const stats = await ReadingGoal.aggregate([
       {
         $match: {
           user: new mongoose.Types.ObjectId(userId),
+          book: new mongoose.Types.ObjectId(bookId), 
         },
       },
       {
@@ -19,9 +20,9 @@ export const getGoalStatistics = async (req, res) => {
           activeGoals: {
             $sum: {
               $cond: [
-                { $and: ["$completed", { $gte: ["$endDate", new Date()] }] },
-                0,
+                { $and: [{ $eq: ["$completed", false] }, { $gte: ["$endDate", new Date()] }] },
                 1,
+                0,
               ],
             },
           },

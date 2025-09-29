@@ -9,9 +9,10 @@ import {
   getBookStatistics,
   searchBooks,
   getRecentBooks,
-  updateReadingProgress,
+  logReadingProgress,
   getAllBooksProgress,
   getProgressAnalytics,
+  getReadingStatistics
 } from "../../controller/book/books/bookController.js";
 import { protect } from "../../middleware/auth/protect.js";
 
@@ -24,12 +25,13 @@ router.get("/bookStatus/:status", getBookByStatus);
 router.get("/getBookById/:id", protect, getBookById);
 router.get("/:bookId/statistics",protect, getBookStatistics);
 
-router.post("/createBook", createBook);
+router.post("/createBook",protect, createBook);
 router.put("/updateBook/:id", updateBook);
 router.delete("/deleteBook/:id", deleteBook);
 
-router.put("/:id/progress",protect, updateReadingProgress);
+router.put("/:id/progress",protect, logReadingProgress);
 router.get("/progress/dashboard", protect, getAllBooksProgress);
 router.get("/:id/analytics", getProgressAnalytics);
+router.get("/reading-stats", protect, getReadingStatistics);
 
 export default router;

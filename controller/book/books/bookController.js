@@ -10,7 +10,8 @@ import { getProgressAnalytics } from "./getProgressAnalytics.js";
 import { getRecentBooks } from "./recentAddedBooks.js";
 import { searchBooks } from "./searchBooks.js ";
 import { updateBook } from "./updateBook.js";
-import { updateReadingProgress } from "./updateReadingProgress.js";
+import { logReadingProgress } from "./updateReadingProgress.js";
+import {getReadingStatistics} from "./getReadingStatistics.js";
 
 export {
   getBookStatistics,
@@ -22,8 +23,9 @@ export {
   searchBooks,
   updateBook,
   getAllBooks,
-  updateReadingProgress,
+  logReadingProgress,
   getAllBooksProgress,
   getProgressAnalytics,
   getBookGoals,
+  getReadingStatistics
 };

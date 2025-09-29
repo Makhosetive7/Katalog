@@ -11,7 +11,6 @@ import achievementsRoutes from "./routes/book/achievmentsRoutes.js";
 import challengeRoutes from "./routes/book/challengeRoutes.js";
 import goalRoutes from "./routes/book/goalRoutes.js";
 import notesRoutes from "./routes/book/notesRoutes.js";
-import sessionRoutes from "./routes/book/sessionRoutes.js";
 import streakRoutes from "./routes/book/streakRoutes.js";
 import timelineRoutes from "./routes/book/timelineRoutes.js";
 import authRoutes from "./routes/auth/authRoutes.js";
@@ -61,7 +60,6 @@ app.use(
   challengeRoutes,
   goalRoutes,
   notesRoutes,
-  sessionRoutes,
   streakRoutes,
   timelineRoutes
 );

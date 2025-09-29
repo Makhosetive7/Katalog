@@ -1,45 +1,33 @@
-import ReadingGoal from "../../../model/readingGoals.js"; 
-import ReadingSession from "../../../model/readingSession.js"; 
+import ReadingGoal from "../../../model/readingGoals.js";
 import Book from "../../../model/book.js";
 
 export const calculateGoalProgress = async (goalId) => {
   try {
     const goal = await ReadingGoal.findById(goalId);
-    if (!goal) {
-      throw new Error("Goal not found");
-    }
+    if (!goal) throw new Error("Goal not found");
 
     const now = new Date();
     let progress = 0;
 
-    const sessionFilter = {
-      user: goal.user,
-      book: goal.book,
-      date: { $gte: goal.startDate, $lte: goal.endDate },
-    };
-
-    const sessions = await ReadingSession.find(sessionFilter);
+    const book = await Book.findById(goal.book);
+    if (!book) throw new Error("Book not found");
 
     switch (goal.type) {
       case "pages":
-        progress = sessions.reduce((sum, session) => sum + session.pagesRead, 0);
+        progress = book.currentPage || 0;
         break;
       case "chapters":
-        progress = sessions.reduce((sum, session) => sum + session.chaptersRead, 0);
-        break;
-      case "time":
-        progress = sessions.reduce((sum, session) => sum + session.readingTime, 0);
+        progress = book.currentChapter || 0;
         break;
       case "completion":
-        const book = await Book.findById(goal.book);
-        if (book) {
-          progress = book.completionPercentage || 0;
-        }
+        progress = book.completionPercentage || 0;
+        break;
+      case "time":
+        progress = goal.progress || 0;
         break;
     }
 
     goal.progress = progress;
-
     if (progress >= goal.target && !goal.completed) {
       goal.completed = true;
       goal.completedAt = now;
@@ -50,7 +38,6 @@ export const calculateGoalProgress = async (goalId) => {
 
     await goal.save();
     return goal;
-    
   } catch (error) {
     console.error("Failed to calculate goal progress:", error.message);
     throw error;
