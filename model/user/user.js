@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
+import { type } from "os";
 
 const userSchema = new mongoose.Schema(
   {
@@ -61,7 +62,13 @@ const userSchema = new mongoose.Schema(
     createdAt: {
       type: Date,
       default: Date.now,
-      expires: 1800, // 30 minutes for demo users
+    },
+    demoExpiresAt: {
+      type: Date,
+      default: function () {
+        return this.isDemo ? new Date(Date.now() + 24 * 60 * 60 * 1000) : null;
+      },
+      expires: 0,
     },
   },
   {

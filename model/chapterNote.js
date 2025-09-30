@@ -21,7 +21,11 @@ const chapterNoteSchema = new mongoose.Schema(
     createdAt: {
       type: Date,
       default: Date.now,
-      expires: 1800, // 30 minutes for demo users
+    },
+    demoExpiresAt: {
+      type: Date,
+      default: null,
+      expires: 0,
     },
   },
   {

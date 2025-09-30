@@ -3,36 +3,35 @@ import jwt from "jsonwebtoken";
 
 export const demoLogIn = async (req, res) => {
   try {
-    console.log(" demo Login attempt:");
-    const demoUserId = `guest_${Date.now()}`;
+    console.log("Demo Login attempt:");
 
     const demoUser = await User.create({
       username: `guest_${Math.floor(Math.random() * 10000)}`,
-      email: `${demoUserId}@example.com`,
+      email: `guest_${Date.now()}@example.com`,
       password: Math.random().toString(36).slice(-8),
       isDemo: true,
-      createdAt: new Date(),
-      role: "demo",
+      demoExpiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
 
     const token = jwt.sign(
       { userId: demoUser._id, isDemo: true },
       process.env.JWT_SECRET,
-      { expiresIn: "30m" } // Token valid for 30 minutes
+      { expiresIn: "24h" }
     );
+
     res.status(200).json({
+      message:
+        "Demo login successful. Note: This account will expire in 24hrs.",
       token,
       user: {
         id: demoUser._id,
         username: demoUser.username,
         email: demoUser.email,
-        password: demoUser.password,
+        isDemo: demoUser.isDemo,
       },
-      message:
-        "Demo login successful. Note: This session will expire in 30 minutes.",
     });
   } catch (error) {
-    console.log("Demo login failed:", error.message);
+    console.error("Demo login failed:", error.message);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
