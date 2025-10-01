@@ -20,13 +20,11 @@ import profileRoutes from "./routes/auth/profileRoutes.js";
 dotenv.config();
 const app = express();
 
-// Debugging middleware
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
   next();
 });
 
-// Error handling for unhandled rejections & uncaught exceptions
 process.on("unhandledRejection", (err) => {
   console.error("Unhandled Promise Rejection:", err);
   process.exit(1);
@@ -37,7 +35,6 @@ process.on("uncaughtException", (err) => {
   process.exit(1);
 });
 
-// Middleware
 app.use(
   cors({
     origin: process.env.CLIENT_URL || "http://localhost:3000",
@@ -49,7 +46,6 @@ app.use(morgan("combined"));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
 app.use(
   "/api/books",
   bookRoutes,
@@ -72,12 +68,10 @@ app.get("/health", (req, res) => {
   });
 });
 
-// 404 handler
 app.use((req, res) => {
   res.status(404).json({ message: "Not Found" });
 });
 
-// Error handler
 app.use((error, req, res, next) => {
   console.error("Error:", error);
   res.status(500).json({
@@ -89,7 +83,6 @@ app.use((error, req, res, next) => {
   });
 });
 
-// Start server
 const startServer = async () => {
   try {
     await connectDB();

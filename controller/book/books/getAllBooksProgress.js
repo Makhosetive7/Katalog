@@ -5,7 +5,6 @@ export const getAllBooksProgress = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    // Fetch all books for the user
     const books = await Book.find({ user: userId });
 
     if (!books.length) {
@@ -23,7 +22,6 @@ export const getAllBooksProgress = async (req, res) => {
       });
     }
 
-    // Compute book progress and fetch goals
     const progressData = await Promise.all(
       books.map(async (book) => {
         const pageCompletion =
@@ -38,7 +36,6 @@ export const getAllBooksProgress = async (req, res) => {
           100
         );
 
-        // fetch goals for this book
         const goals = await ReadingGoal.find({ user: userId, book: book._id });
 
         return {
@@ -60,7 +57,6 @@ export const getAllBooksProgress = async (req, res) => {
       })
     );
 
-    // Aggregate statistics
     const totalBooks = books.length;
     const completedBooks = books.filter((b) => b.status === "Completed").length;
     const totalPagesRead = books.reduce((sum, b) => sum + (b.currentPage || 0), 0);

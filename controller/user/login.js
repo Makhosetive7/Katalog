@@ -6,7 +6,6 @@ export const login = async (req, res) => {
   try {
     console.log('Login attempt:', req.body);
 
-    // Validation
     const { error } = validateLogin(req.body);
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
@@ -14,7 +13,6 @@ export const login = async (req, res) => {
 
     const { email, password } = req.body;
 
-    // Find user
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({
@@ -22,7 +20,6 @@ export const login = async (req, res) => {
       });
     }
 
-    // Check password
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
       return res.status(401).json({
@@ -30,14 +27,12 @@ export const login = async (req, res) => {
       });
     }
 
-    // Check if email is verified
     if (!user.isVerified) {
       return res.status(401).json({
         message: "Please verify your email before logging in",
       });
     }
 
-    // Generate token
     const token = generateToken(user._id);
 
     res.json({

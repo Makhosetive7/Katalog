@@ -11,7 +11,6 @@ export const changePassword = async (req, res) => {
       });
     }
 
-    // Verify current password
     const isCurrentPasswordValid = await user.comparePassword(currentPassword);
     if (!isCurrentPasswordValid) {
       return res.status(400).json({

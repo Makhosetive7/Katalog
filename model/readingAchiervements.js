@@ -21,7 +21,7 @@ const AchievementSchema = new mongoose.Schema(
     },
     level: {
       type: String,
-      enum: ["bronze", "silver", "gold", "platinum"],
+      enum: ["beginner","bronze", "silver", "gold", "platinum"],
       required: true,
     },
     title: {

@@ -16,7 +16,6 @@ export const logReadingProgress = async (req, res) => {
     const book = await Book.findById(bookId);
     if (!book) return res.status(404).json({ message: "Book not found" });
 
-    // 🔹 Update pages
     if (currentPage !== undefined) {
       if (currentPage > book.pages) {
         return res.status(400).json({ message: "Current page cannot exceed total pages" });
@@ -24,7 +23,6 @@ export const logReadingProgress = async (req, res) => {
       book.currentPage = Math.max(currentPage, book.currentPage);
     }
 
-    // 🔹 Update chapters
     if (currentChapter !== undefined) {
       if (currentChapter > book.chapters) {
         return res.status(400).json({ message: "Current chapter cannot exceed total chapters" });
@@ -32,7 +30,6 @@ export const logReadingProgress = async (req, res) => {
       book.currentChapter = Math.max(currentChapter, book.currentChapter);
     }
 
-    // 🔹 Chapter notes
     if (note && currentChapter !== undefined) {
       const existingNote = await ChapterNote.findOne({ user: userId, book: bookId, chapter: currentChapter });
       if (existingNote) {
@@ -50,15 +47,12 @@ export const logReadingProgress = async (req, res) => {
       }
     }
 
-    // 🔹 Completion %
     const pageCompletion = book.pages > 0 ? Math.round((book.currentPage / book.pages) * 100) : 0;
     const chapterCompletion = book.chapters > 0 ? Math.round((book.currentChapter / book.chapters) * 100) : 0;
     book.completionPercentage = Math.min(Math.max(pageCompletion, chapterCompletion), 100);
 
-    // 🔹 Ensure timeline exists
     if (!book.timeline) book.timeline = {};
 
-    // 🔹 Update status
     if (status) {
       book.status = status;
     } else {
@@ -67,7 +61,6 @@ export const logReadingProgress = async (req, res) => {
         book.timeline.completedAt = new Date();
         await checkBookAchievements(userId, bookId);
 
-        // Update reading challenge
         const challenge = await ReadingChallenge.findOne({ user: userId, year: new Date().getFullYear() });
         if (challenge && !challenge.books.includes(bookId)) {
           challenge.books.push(bookId);
@@ -85,7 +78,6 @@ export const logReadingProgress = async (req, res) => {
       }
     }
 
-    // 🔹 Update reading velocity
     if (book.currentPage > 0) {
       const daysSinceStart = Math.max(
         1,
@@ -97,16 +89,13 @@ export const logReadingProgress = async (req, res) => {
 
     await book.save();
 
-    // 🔹 Update streak
     await updateReadingStreak(userId);
 
-    // 🔹 Update active goals
     const activeGoals = await ReadingGoal.find({ user: userId, book: bookId, completed: false });
     for (const goal of activeGoals) {
       await calculateGoalProgress(goal._id);
     }
 
-    // 🔹 Response
     res.json({
       message: "Reading progress logged successfully",
       book: {

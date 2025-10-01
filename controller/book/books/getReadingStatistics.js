@@ -16,7 +16,6 @@ export const getReadingStatistics = async (req, res) => {
     const completedBooks = books.filter(b => b.completionPercentage === 100).length;
     const inProgressBooks = totalBooks - completedBooks;
 
-    // Calculate total reading time (from velocity instead of sessions)
     const totalPagesRead = books.reduce((sum, b) => sum + (b.currentPage || 0), 0);
     const avgPagesPerDay =
       books.length > 0

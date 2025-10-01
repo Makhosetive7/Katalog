@@ -9,6 +9,7 @@ export const checkBookAchievements = async (userId, bookId) => {
   });
 
   const bookAchievements = [
+    { count: 1, level: "beginner", title: "Novice Reader" },
     { count: 10, level: "bronze", title: "Novice Reader" },
     { count: 25, level: "silver", title: "Bookworm" },
     { count: 50, level: "gold", title: "Bibliophile" },
