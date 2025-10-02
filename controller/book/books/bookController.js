@@ -8,7 +8,7 @@ import { getBookGoals } from "../readingGoals/getBookGoals.js";
 import { getBookStatistics } from "./getBookStatistics.js";
 import { getProgressAnalytics } from "./getProgressAnalytics.js";
 import { getRecentBooks } from "./recentAddedBooks.js";
-import { searchBooks } from "./searchBooks.js ";
+import { searchBooks } from "./searchBooks.js";
 import { updateBook } from "./updateBook.js";
 import { logReadingProgress } from "./updateReadingProgress.js";
 import {getReadingStatistics} from "./getReadingStatistics.js";
