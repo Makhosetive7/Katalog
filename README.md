@@ -1,7 +1,7 @@
 # Katalog
 
-A **Node.js + Express** backend for managing books, reading progress, challenges, goals, achievements, notes, and user authentication.  
-This project helps readers track their habits, measure progress, and stay motivated with achievements and streaks.
+A **Node.js + Express** backend for managing books, reading progress, challenges, goals, achievements, notes, and user authentication
+This project helps readers track their habits, measure progress, and stay motivated with achievements and streaks
 
 ---
 
@@ -9,34 +9,34 @@ This project helps readers track their habits, measure progress, and stay motiva
 
 ### User & Authentication
 
-- User registration, login, logout, and demo login.
-- Email verification and resend verification.
-- Secure password reset (with token + expiration).
-- Profile management (update profile, change password).
-- Rate limiting for authentication endpoints.
+- User registration, login, logout, and demo login
+- Email verification and resend verification
+- Secure password reset (with token + expiration)
+- Profile management (update profile, change password)
+- Rate limiting for authentication endpoints
 
 ### Books management
 
-- CRUD operations for books (create, update, delete).
-- Search books and filter by status.
-- Recently added books endpoint.
-- Book-specific statistics and analytics.
-- Log current reading progress per book.
-- Get aggregated reading progress and analytics dashboards.
-- Access detailed reading statistics for users.
+- CRUD operations for books (create, update, delete)
+- Search books and filter by status
+- Recently added books endpoint
+- Book-specific statistics and analytics
+- Log current reading progress per book
+- Get aggregated reading progress and analytics dashboards
+- Access detailed reading statistics for users
 
 ### Reading Progress & Analytics
 
-- Log and update reading progress by book.
-- Dashboard view of progress across all books.
-- Analytics for reading trends and statistics.
+- Log and update reading progress by book
+- Dashboard view of progress across all books
+- Analytics for reading trends and statistics
 
 ### Goals & Challenges
 
-- Set and manage **reading goals** per book.
-- Track progress toward goals.
-- Set reading challenges and track progress.
-- Check and unlock challenge achievements.
+- Set and manage **reading goals** per book
+- Track progress toward goals
+- Set reading challenges and track progress
+- Check and unlock challenge achievements
 
 ### Achievements tracking
 
@@ -44,18 +44,18 @@ This project helps readers track their habits, measure progress, and stay motiva
   - Books read
   - Genres completed
   - Reading streaks
-- Achievement progress checks.
+- Achievement progress checks
 
-### Chapter notes
+- ## Chapter notes
 
-- Create notes linked to chapters or books.
-- Update, delete, and retrieve notes.
-- View grouped notes across books.
+- Create notes linked to chapters or books
+- Update, delete, and retrieve notes
+- View grouped notes across books
 
 ### Reading streaks
 
-- Track daily/weekly reading streaks.
-- Update streaks automatically with reading activity.
+- Track daily/weekly reading streaks
+- Update streaks automatically with reading activity
 
 ---
 
@@ -64,22 +64,22 @@ This project helps readers track their habits, measure progress, and stay motiva
 ### User Onboarding
 
 **User Registration → Email Verification → Profile Setup**  
-Start your journey by creating an account, verifying your email, and customizing your profile to reflect your reading preferences.
+Start your journey by creating an account, verifying your email, and customizing your profile to reflect your reading preferences
 
 ### Book Management
 
 **Add Books → Set Reading Status → Track Progress**  
-Build your personal library, categorize books by reading status (e.g., "To Read", "Reading", "Completed"), and log your progress as you go.
+Build your personal library, categorize books by reading status (e.g., "To Read", "Reading", "Completed"), and log your progress as you go
 
 ### Goal Setting
 
 **Set Goals → Log Reading Sessions → Monitor Progress**  
-Define specific reading goals per book, log sessions to stay accountable, and visualize your progress with intuitive dashboards.
+Define specific reading goals per book, log sessions to stay accountable, and visualize your progress with intuitive dashboards
 
 ### Notes & Insights
 
 **Take Notes → Review Analytics → Adjust Reading Habits**  
-Capture thoughts and reflections per chapter, analyze your reading behavior, and fine-tune your habits for deeper engagement.
+Capture thoughts and reflections per chapter, analyze your reading behavior, and fine-tune your habits for deeper engagement
 
 ---
 
