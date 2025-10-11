@@ -1,6 +1,6 @@
 # Katalog
 
-A **Node.js + Express** backend for managing books, reading progress, challenges, goals, achievements, notes, and user authentication
+**Node.js + Express** backend for managing books, reading progress, challenges, goals, achievements, notes, and user authentication
 This project helps readers track their habits, measure progress, and stay motivated with achievements and streaks
 
 ---
