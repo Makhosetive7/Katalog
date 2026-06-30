@@ -1,7 +1,13 @@
 import User from '../../model/user/user.js';
+import { validatePasswordReset } from '../../middleware/validation/validatePasswordReset.js';
 
 export const resetPassword = async (req, res) => {
   try {
+    const { error } = validatePasswordReset(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+
     const { token, newPassword } = req.body;
 
     const user = await User.findOne({

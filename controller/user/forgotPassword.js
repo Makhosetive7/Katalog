@@ -1,4 +1,5 @@
 import User from "../../model/user/user.js";
+import { sendPasswordResetEmail } from "../../service/emailService/emailService.js";
 
 export const forgotPassword = async (req, res) => {
   try {
@@ -20,6 +21,7 @@ export const forgotPassword = async (req, res) => {
       message: "Password reset email sent successfully",
     });
   } catch (error) {
+    console.error("Forgot password failed:", error.message);
     res.status(500).json({
       message: "Error sending password reset email",
       error: error.message,
