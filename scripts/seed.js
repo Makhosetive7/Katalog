@@ -926,6 +926,13 @@ const seedNovelLover = async () => {
 };
 
 const runSeed = async () => {
+  if (process.env.NODE_ENV === "production" && process.env.ALLOW_PROD_SEED !== "true") {
+    console.error(
+      "Seed blocked in production. Set ALLOW_PROD_SEED=true only if you really intend to seed prod."
+    );
+    process.exit(1);
+  }
+
   console.log("Connecting to MongoDB...");
   await connectDB();
 

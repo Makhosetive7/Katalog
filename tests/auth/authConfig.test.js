@@ -24,7 +24,7 @@ describe("authConfig", () => {
     expect(config.allowGoogle).toBe(false);
   });
 
-  it("disables local and demo auth in production by default", async () => {
+  it("keeps local auth enabled in production by default", async () => {
     process.env.NODE_ENV = "production";
     delete process.env.AUTH_ALLOW_LOCAL;
     delete process.env.AUTH_ALLOW_DEMO;
@@ -34,8 +34,18 @@ describe("authConfig", () => {
     const { getPublicAuthConfig } = await import("../../config/authConfig.js");
     const config = getPublicAuthConfig();
 
-    expect(config.allowLocal).toBe(false);
+    expect(config.allowLocal).toBe(true);
     expect(config.allowDemo).toBe(false);
+  });
+
+  it("can disable local auth in production when configured", async () => {
+    process.env.NODE_ENV = "production";
+    process.env.AUTH_ALLOW_LOCAL = "false";
+
+    const { getPublicAuthConfig } = await import("../../config/authConfig.js");
+    const config = getPublicAuthConfig();
+
+    expect(config.allowLocal).toBe(false);
   });
 
   it("enables Google when credentials are present", async () => {

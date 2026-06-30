@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import { resolveMongoUrl } from "./mongoConfig.js";
 
 dotenv.config();
 
@@ -6,7 +7,7 @@ export const config = {
   env: process.env.NODE_ENV || "development",
   port: process.env.PORT || 5000,
 
-  mongoUrl: process.env.MONGO_URL,
+  mongoUrl: resolveMongoUrl(),
 
   jwt: {
     secret: process.env.JWT_SECRET,

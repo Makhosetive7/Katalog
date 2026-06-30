@@ -12,7 +12,7 @@ const hasGoogleCredentials = Boolean(
 export const authConfig = {
   env: process.env.NODE_ENV || "development",
   isProd,
-  allowLocal: parseBool(process.env.AUTH_ALLOW_LOCAL, !isProd),
+  allowLocal: parseBool(process.env.AUTH_ALLOW_LOCAL, true),
   allowDemo: parseBool(process.env.AUTH_ALLOW_DEMO, !isProd),
   allowGoogle:
     parseBool(process.env.AUTH_ALLOW_GOOGLE, true) && hasGoogleCredentials,
