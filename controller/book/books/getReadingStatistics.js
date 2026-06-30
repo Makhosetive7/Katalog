@@ -5,7 +5,7 @@ import Achievement from "../../../model/readingAchiervements.js";
 
 export const getReadingStatistics = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.userId;
     const currentYear = new Date().getFullYear();
 
     // Fetch books

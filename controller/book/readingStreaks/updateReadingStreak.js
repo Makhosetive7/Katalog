@@ -1,4 +1,5 @@
 import ReadingStreak from "../../../model/readingStreak.js";
+import { checkStreakAchievements } from "../readingAchievements/checkStreakAchievements.js";
 
 export const updateReadingStreak = async (userId) => {
   try {

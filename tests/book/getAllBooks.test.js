@@ -5,55 +5,82 @@ import { getAllBooks } from "../../controller/book/books/bookController.js";
 describe("getAllBooks Controller", () => {
   let req;
   let res;
-  let findSpy;
 
   beforeEach(() => {
     req = {
-      user: { id: "user123" },
+      userId: "user123",
+      query: {},
     };
     res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
-    findSpy = jest.spyOn(Book, "find");
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
-  it("should return all books for the user", async () => {
+  it("should return paginated books for the user", async () => {
     const mockBooks = [
       { _id: "1", title: "Book 1", user: "user123" },
       { _id: "2", title: "Book 2", user: "user123" },
     ];
 
-    findSpy.mockResolvedValue(mockBooks);
+    jest.spyOn(Book, "find").mockReturnValue({
+      sort: jest.fn().mockReturnValue({
+        skip: jest.fn().mockReturnValue({
+          limit: jest.fn().mockResolvedValue(mockBooks),
+        }),
+      }),
+    });
+    jest.spyOn(Book, "countDocuments").mockResolvedValue(2);
 
     await getAllBooks(req, res);
 
-    expect(findSpy).toHaveBeenCalledWith({ user: "user123" });
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith(mockBooks);
+    expect(res.json).toHaveBeenCalledWith({
+      items: mockBooks,
+      pagination: {
+        page: 1,
+        limit: 20,
+        total: 2,
+        totalPages: 1,
+        hasMore: false,
+      },
+    });
   });
 
-  it("should return 404 if no books found", async () => {
-    findSpy.mockResolvedValue([]);
+  it("should return empty paginated list if no books found", async () => {
+    jest.spyOn(Book, "find").mockReturnValue({
+      sort: jest.fn().mockReturnValue({
+        skip: jest.fn().mockReturnValue({
+          limit: jest.fn().mockResolvedValue([]),
+        }),
+      }),
+    });
+    jest.spyOn(Book, "countDocuments").mockResolvedValue(0);
 
     await getAllBooks(req, res);
 
-    expect(findSpy).toHaveBeenCalledWith({ user: "user123" });
-    expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({ message: "No books found for this user" });
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      items: [],
+      pagination: expect.objectContaining({ total: 0 }),
+    });
   });
 
   it("should handle errors and return 500", async () => {
-    findSpy.mockRejectedValue(new Error("DB error"));
+    jest.spyOn(Book, "find").mockImplementation(() => {
+      throw new Error("DB error");
+    });
 
     await getAllBooks(req, res);
 
-    expect(findSpy).toHaveBeenCalledWith({ user: "user123" });
     expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ error: "Failed to retrieve books" });
+    expect(res.json).toHaveBeenCalledWith({
+      code: "SERVER_ERROR",
+      message: "Failed to retrieve books",
+    });
   });
 });

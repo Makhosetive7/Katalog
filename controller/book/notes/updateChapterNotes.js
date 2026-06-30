@@ -1,4 +1,5 @@
 import ChapterNote from "../../../model/chapterNote.js";
+import { logUserReadingActivity } from "../readingActivity/recordReadingActivity.js";
 
 export const updateChapterNote = async (req, res) => {
   try {
@@ -23,6 +24,8 @@ export const updateChapterNote = async (req, res) => {
     if (!updatedNote) {
       return res.status(404).json({ error: "Note not found or access denied" });
     }
+
+    await logUserReadingActivity(userId, { noteAdded: true });
 
     res.json({
       message: "Note updated successfully",

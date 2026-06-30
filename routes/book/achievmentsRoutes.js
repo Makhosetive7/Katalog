@@ -1,17 +1,17 @@
 import express from "express";
 import {
   getUserAchievements,
-  checkBookAchievements,
-  checkGenreAchievement,
-  checkStreakAchievements,
+  httpCheckBookAchievements,
+  httpCheckGenreAchievements,
+  httpCheckStreakAchievements,
 } from "../../controller/book/readingAchievements/achievementsController.js";
 import { protect } from "../../middleware/auth/protect.js";
 
 const router = express.Router();
 
 router.get("/userAchievements", protect, getUserAchievements);
-router.get("/bookAchievements", protect, checkBookAchievements);
-router.get("/genreAchievements", protect, checkGenreAchievement);
-router.get("/streakAchievements", protect, checkStreakAchievements);
+router.get("/bookAchievements", protect, httpCheckBookAchievements);
+router.get("/genreAchievements", protect, httpCheckGenreAchievements);
+router.get("/streakAchievements", protect, httpCheckStreakAchievements);
 
 export default router;

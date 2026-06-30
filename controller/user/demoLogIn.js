@@ -10,6 +10,7 @@ export const demoLogIn = async (req, res) => {
       email: `guest_${Date.now()}@example.com`,
       password: Math.random().toString(36).slice(-8),
       isDemo: true,
+      isVerified: true,
       demoExpiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
 

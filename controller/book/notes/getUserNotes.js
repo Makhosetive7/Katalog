@@ -4,6 +4,7 @@ import ChapterNote from "../../../model/chapterNote.js";
 export const getAllNotesGrouped = async (req, res) => {
   try {
     const notes = await ChapterNote.aggregate([
+      { $match: { user: new mongoose.Types.ObjectId(req.userId) } },
       {
         $addFields: {
           bookObjectId: {

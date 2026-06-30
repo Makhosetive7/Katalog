@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 
-const createTransporter = () => {
+export const createTransporter = () => {
   const { EMAIL_SERVICE, EMAIL_USER, EMAIL_PASS, EMAIL_HOST, EMAIL_PORT } = process.env;
 
   if (EMAIL_SERVICE === "gmail") {

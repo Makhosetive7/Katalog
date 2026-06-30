@@ -6,26 +6,31 @@ import { updateReadingStreak } from "../readingStreaks/updateReadingStreak.js";
 import { checkBookAchievements } from "../readingAchievements/checkBookAchievements.js";
 import { checkChallengeAchievement } from "../readingChallange/checkChallengeAchievement.js";
 import { calculateGoalProgress } from "../readingGoals/calculateReadingProgress.js";
+import { logUserReadingActivity } from "../readingActivity/recordReadingActivity.js";
+import { buildRichProgressPayload } from "./buildRichProgressPayload.js";
 
 export const logReadingProgress = async (req, res) => {
   try {
     const { currentPage, currentChapter, note, status } = req.body;
     const bookId = req.params.id;
-    const userId = req.user.id;
+    const userId = req.userId;
+    const requestStartedAt = new Date();
 
-    const book = await Book.findById(bookId);
-    if (!book) return res.status(404).json({ message: "Book not found" });
+    const book = req.book || (await Book.findById(bookId));
+    if (!book) return res.status(404).json({ code: "NOT_FOUND", message: "Book not found" });
+
+    const previousPage = book.currentPage ?? 0;
 
     if (currentPage !== undefined) {
       if (currentPage > book.pages) {
-        return res.status(400).json({ message: "Current page cannot exceed total pages" });
+        return res.status(400).json({ code: "BAD_REQUEST", message: "Current page cannot exceed total pages" });
       }
       book.currentPage = Math.max(currentPage, book.currentPage);
     }
 
     if (currentChapter !== undefined) {
       if (currentChapter > book.chapters) {
-        return res.status(400).json({ message: "Current chapter cannot exceed total chapters" });
+        return res.status(400).json({ code: "BAD_REQUEST", message: "Current chapter cannot exceed total chapters" });
       }
       book.currentChapter = Math.max(currentChapter, book.currentChapter);
     }
@@ -89,6 +94,18 @@ export const logReadingProgress = async (req, res) => {
 
     await book.save();
 
+    const pagesDelta =
+      currentPage !== undefined
+        ? Math.max(0, (book.currentPage ?? 0) - previousPage)
+        : 0;
+
+    await logUserReadingActivity(userId, {
+      pagesDelta,
+      progressUpdate: currentPage !== undefined || currentChapter !== undefined || !!status,
+      noteAdded: !!(note && currentChapter !== undefined),
+      bookCompleted: book.status === "Completed" && book.completionPercentage >= 100,
+      bookStarted: book.status === "In-Progress" && book.completionPercentage > 0,
+    });
     await updateReadingStreak(userId);
 
     const activeGoals = await ReadingGoal.find({ user: userId, book: bookId, completed: false });
@@ -96,27 +113,20 @@ export const logReadingProgress = async (req, res) => {
       await calculateGoalProgress(goal._id);
     }
 
+    const rich = await buildRichProgressPayload({
+      userId,
+      book,
+      previousPage,
+      requestStartedAt,
+      activeGoals,
+    });
+
     res.json({
       message: "Reading progress logged successfully",
-      book: {
-        id: book._id,
-        title: book.title,
-        author: book.author,
-        currentPage: book.currentPage,
-        currentChapter: book.currentChapter,
-        status: book.status,
-        completionPercentage: book.completionPercentage,
-        velocity: book.readingVelocity,
-      },
-      updatedGoals: activeGoals.map((g) => ({
-        id: g._id,
-        progress: g.progress,
-        target: g.target,
-        completed: g.completed,
-      })),
+      ...rich,
     });
   } catch (error) {
     console.error("Failed logging reading progress:", error.message);
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ code: "SERVER_ERROR", message: error.message });
   }
 };

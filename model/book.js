@@ -22,6 +22,9 @@ const bookSchema = new Schema(
     },
     notes: String,
     imageUrl: String,
+    isbn: String,
+    openLibraryKey: String,
+    description: String,
     status: {
       type: String,
       enum: ["Planned", "In-Progress", "Completed", "Dropped"],
@@ -142,5 +145,9 @@ bookSchema.methods.updateCompletion = function () {
   this.completionPercentage = Math.min(this.completionPercentage, 100);
   this.updateStatus();
 };
+
+bookSchema.index({ user: 1, status: 1 });
+bookSchema.index({ user: 1, createdAt: -1 });
+bookSchema.index({ user: 1, title: "text", author: "text" });
 
 export default mongoose.model("Book", bookSchema);

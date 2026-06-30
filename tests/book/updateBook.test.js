@@ -6,18 +6,18 @@ import { updateBook } from "../../controller/book/books/bookController.js";
 describe("updateBook Controller", () => {
   let req;
   let res;
-  let findOneSpy;
-  let saveSpy;
+  let findByIdSpy;
 
   beforeEach(() => {
     req = {
       params: { id: "12345" },
+      userId: "user123",
       body: {
         title: "Updated Title",
         genre: ["Drama"],
         author: "New Author",
         pages: 200,
-        status: "Completed",
+        status: "In-Progress",
         rating: 5,
         notes: "Good book",
       },
@@ -28,7 +28,7 @@ describe("updateBook Controller", () => {
       json: jest.fn(),
     };
 
-    findOneSpy = jest.spyOn(Book, "findOne");
+    findByIdSpy = jest.spyOn(Book, "findById");
   });
 
   afterEach(() => {
@@ -39,14 +39,15 @@ describe("updateBook Controller", () => {
     const mockBook = {
       _id: "12345",
       title: "Old Title",
+      status: "In-Progress",
+      timeline: {},
       save: jest.fn().mockResolvedValue({ _id: "12345", title: "Updated Title" }),
     };
 
-    findOneSpy.mockResolvedValue(mockBook);
+    findByIdSpy.mockResolvedValue(mockBook);
 
     await updateBook(req, res);
 
-    expect(findOneSpy).toHaveBeenCalledWith({ _id: "12345" });
     expect(mockBook.save).toHaveBeenCalled();
     expect(res.json).toHaveBeenCalledWith({
       message: "Book updated successfully",
@@ -55,38 +56,37 @@ describe("updateBook Controller", () => {
   });
 
   it("should return 404 if book not found", async () => {
-    findOneSpy.mockResolvedValue(null);
+    findByIdSpy.mockResolvedValue(null);
 
     await updateBook(req, res);
 
     expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({ message: "Book not found" });
+    expect(res.json).toHaveBeenCalledWith({ code: "NOT_FOUND", message: "Book not found" });
   });
 
-
-  it("should set startedAt when status is Reading and not set", async () => {
+  it("should set timeline.startedAt when status is In-Progress", async () => {
     const mockBook = {
       _id: "12345",
       status: "Planned",
-      save: jest.fn().mockResolvedValue({ _id: "12345", status: "Reading" }),
+      timeline: {},
+      save: jest.fn().mockResolvedValue({ _id: "12345", status: "In-Progress" }),
     };
 
-    findOneSpy.mockResolvedValue(mockBook);
-
-    req.body.status = "Reading";
+    findByIdSpy.mockResolvedValue(mockBook);
+    req.body.status = "In-Progress";
 
     await updateBook(req, res);
 
-    expect(mockBook.startedAt).toBeDefined();
+    expect(mockBook.timeline.startedAt).toBeDefined();
     expect(mockBook.save).toHaveBeenCalled();
   });
 
   it("should handle server errors", async () => {
-    findOneSpy.mockRejectedValue(new Error("DB error"));
+    findByIdSpy.mockRejectedValue(new Error("DB error"));
 
     await updateBook(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ message: "Server error" });
+    expect(res.json).toHaveBeenCalledWith({ code: "SERVER_ERROR", message: "Server error" });
   });
 });

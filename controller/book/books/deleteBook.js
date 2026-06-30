@@ -2,17 +2,16 @@ import Book from "../../../model/book.js";
 
 export const deleteBook = async (req, res) => {
   try {
-    const { id } = req.params;
+    const book = req.book || (await Book.findById(req.params.id));
 
-    const bookDeletion = await Book.findByIdAndDelete(id);
-
-    if (!bookDeletion) {
-      return res.status(404).json({ message: "Book not found" });
+    if (!book) {
+      return res.status(404).json({ code: "NOT_FOUND", message: "Book not found" });
     }
 
+    await book.deleteOne();
     res.status(200).json({ message: "Book deleted successfully" });
   } catch (error) {
     console.error("Failed deleting book:", error.message);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ code: "SERVER_ERROR", message: "Server error" });
   }
 };

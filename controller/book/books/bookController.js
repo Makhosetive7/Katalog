@@ -12,6 +12,7 @@ import { searchBooks } from "./searchBooks.js";
 import { updateBook } from "./updateBook.js";
 import { logReadingProgress } from "./updateReadingProgress.js";
 import {getReadingStatistics} from "./getReadingStatistics.js";
+import { getReadingActivityHeatmap } from "../readingActivity/getReadingActivityHeatmap.js";
 
 export {
   getBookStatistics,
@@ -27,5 +28,6 @@ export {
   getAllBooksProgress,
   getProgressAnalytics,
   getBookGoals,
-  getReadingStatistics
+  getReadingStatistics,
+  getReadingActivityHeatmap,
 };

@@ -19,7 +19,7 @@ export const getProfile = async (req, res) => {
     const achievements = await ReadingAchievement.find({ user: userId });
     const goals = await ReadingGoal.find({ user: userId });
     const streak = await ReadingStreak.findOne({ user: userId })
-    const booksRead = await Book.find({ user: userId, status: "completed" }); 
+    const booksRead = await Book.find({ user: userId, status: "Completed" });
 
     res.json({
       user,

@@ -2,8 +2,8 @@ import ChapterNote from "../../../model/chapterNote.js";
 
 export const getChapterNotes = async (req, res) => {
   try {
-    const { id } = req.params;
-    const notes = await ChapterNote.find({ book: id })
+    const { bookId } = req.params;
+    const notes = await ChapterNote.find({ user: req.userId, book: bookId })
       .populate("book")
       .sort({ chapter: 1, createdAt: -1 });
 
@@ -14,7 +14,6 @@ export const getChapterNotes = async (req, res) => {
         totalNotes: 0,
       });
     }
-    console.log("Book ID from route:", id);
 
     const grouped = notes.reduce((acc, note) => {
       if (!acc[note.chapter]) acc[note.chapter] = [];
@@ -37,6 +36,6 @@ export const getChapterNotes = async (req, res) => {
     });
   } catch (error) {
     console.error("Failed to get chapter notes:", error.message);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ code: "SERVER_ERROR", message: "Server error" });
   }
 };

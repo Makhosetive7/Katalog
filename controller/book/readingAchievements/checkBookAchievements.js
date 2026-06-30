@@ -9,7 +9,7 @@ export const checkBookAchievements = async (userId, bookId) => {
   });
 
   const bookAchievements = [
-    { count: 1, level: "beginner", title: "Novice Reader" },
+    { count: 1, level: "beginner", title: "First Finish" },
     { count: 10, level: "bronze", title: "Novice Reader" },
     { count: 25, level: "silver", title: "Bookworm" },
     { count: 50, level: "gold", title: "Bibliophile" },
@@ -32,12 +32,11 @@ export const checkBookAchievements = async (userId, bookId) => {
           level: achievement.level,
           title: achievement.title,
           description: `Read ${achievement.count} books`,
-          metadata: { value: achievement.count },
+          metadata: { value: achievement.count, bookId },
         });
       }
     }
   }
 
-  await checkGenreAchievement();
-  userId;
+  await checkGenreAchievement(userId);
 };

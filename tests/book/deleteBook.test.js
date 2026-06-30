@@ -5,54 +5,38 @@ import { deleteBook } from "../../controller/book/books/bookController.js";
 describe("deleteBook Controller", () => {
   let req;
   let res;
-  let findByIdAndDeleteSpy;
+  let findByIdSpy;
 
   beforeEach(() => {
-    req = {
-      params: {
-        id: "12345",
-      },
-    };
-
-    res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    };
-
-    findByIdAndDeleteSpy = jest.spyOn(Book, "findByIdAndDelete");
+    req = { params: { id: "12345" } };
+    res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+    findByIdSpy = jest.spyOn(Book, "findById");
   });
 
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
+  afterEach(() => jest.restoreAllMocks());
 
   it("should delete a book by ID", async () => {
-    findByIdAndDeleteSpy.mockResolvedValue({ _id: "12345" });
+    const mockBook = { deleteOne: jest.fn().mockResolvedValue({}) };
+    findByIdSpy.mockResolvedValue(mockBook);
 
     await deleteBook(req, res);
 
-    expect(findByIdAndDeleteSpy).toHaveBeenCalledWith("12345");
+    expect(mockBook.deleteOne).toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({ message: "Book deleted successfully" });
   });
 
   it("should return 404 if book not found", async () => {
-    findByIdAndDeleteSpy.mockResolvedValue(null);
-
+    findByIdSpy.mockResolvedValue(null);
     await deleteBook(req, res);
-
-    expect(findByIdAndDeleteSpy).toHaveBeenCalledWith("12345");
     expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({ message: "Book not found" });
+    expect(res.json).toHaveBeenCalledWith({ code: "NOT_FOUND", message: "Book not found" });
   });
 
   it("should handle server errors", async () => {
-    findByIdAndDeleteSpy.mockRejectedValue(new Error("DB error"));
-
+    findByIdSpy.mockRejectedValue(new Error("DB error"));
     await deleteBook(req, res);
-
-    expect(findByIdAndDeleteSpy).toHaveBeenCalledWith("12345");
     expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ message: "Server error" });
+    expect(res.json).toHaveBeenCalledWith({ code: "SERVER_ERROR", message: "Server error" });
   });
 });

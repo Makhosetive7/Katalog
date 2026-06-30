@@ -6,10 +6,10 @@ export const getBookByStatus = async (req, res) => {
     const validStatuses = ["Planned", "In-Progress", "Completed", "Dropped"];
 
     if (!validStatuses.includes(status)) {
-      return res.status(400).json({ error: "Invalid status value" });
+      return res.status(400).json({ code: "BAD_REQUEST", message: "Invalid status value" });
     }
 
-    const bookStatus = await Book.find({ status }).sort({ createdAt: -1 });
+    const bookStatus = await Book.find({ user: req.userId, status }).sort({ createdAt: -1 });
 
     res.status(200).json({
       status,
@@ -18,6 +18,6 @@ export const getBookByStatus = async (req, res) => {
     });
   } catch (error) {
     console.error("Failed getting books by status:", error.message);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ code: "SERVER_ERROR", message: "Server error" });
   }
 };

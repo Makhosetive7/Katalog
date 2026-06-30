@@ -5,6 +5,10 @@ export const getGoalStatistics = async (req, res) => {
   try {
     const { userId, bookId } = req.params;
 
+    if (userId !== req.userId.toString()) {
+      return res.status(403).json({ code: "FORBIDDEN", message: "Not authorized" });
+    }
+
     const stats = await ReadingGoal.aggregate([
       {
         $match: {

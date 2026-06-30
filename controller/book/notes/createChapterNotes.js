@@ -1,5 +1,6 @@
 import ChapterNote from "../../../model/chapterNote.js";
 import Book from "../../../model/book.js";
+import { logUserReadingActivity } from "../readingActivity/recordReadingActivity.js";
 
 export const createChapterNote = async (req, res) => {
   try {
@@ -26,6 +27,7 @@ export const createChapterNote = async (req, res) => {
     });
 
     await chapterNote.save();
+    await logUserReadingActivity(userId, { noteAdded: true, progressUpdate: true });
     await chapterNote.populate("user", "username name");
 
     res.status(201).json({

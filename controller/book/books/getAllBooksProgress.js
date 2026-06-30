@@ -3,7 +3,7 @@ import ReadingGoal from "../../../model/readingGoals.js";
 
 export const getAllBooksProgress = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.userId;
 
     const books = await Book.find({ user: userId });
 
