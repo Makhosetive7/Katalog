@@ -8,7 +8,13 @@ import { resendVerification } from "./resendVerification.js";
 import { resetPassword } from "./resetPassword.js";
 import { updateProfile } from "./updateProfile.js";
 import { verifyEmail } from "./verifyEmail.js";
-import { demoLogIn  } from "./demoLogIn.js";
+import { demoLogIn } from "./demoLogIn.js";
+import {
+  getAuthConfig,
+  googleAuthStart,
+  googleAuthCallback,
+} from "./googleAuth.js";
+
 export {
   changePassword,
   forgotPassword,
@@ -20,5 +26,8 @@ export {
   resetPassword,
   updateProfile,
   verifyEmail,
-  demoLogIn ,
+  demoLogIn,
+  getAuthConfig,
+  googleAuthStart,
+  googleAuthCallback,
 };

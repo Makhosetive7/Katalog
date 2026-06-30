@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
-import { type } from "os";
 
 const userSchema = new mongoose.Schema(
   {
@@ -24,10 +23,22 @@ const userSchema = new mongoose.Schema(
         "Please enter a valid email",
       ],
     },
+    authProvider: {
+      type: String,
+      enum: ["local", "google"],
+      default: "local",
+    },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
     password: {
       type: String,
-      required: true,
       minlength: 6,
+      required: function requiredPassword() {
+        return this.authProvider === "local" && !this.isDemo;
+      },
     },
     isVerified: {
       type: Boolean,
@@ -116,7 +127,7 @@ userSchema.virtual("readingGoals", {
 
 // Hash password before saving
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+  if (!this.isModified("password") || !this.password) return next();
 
   try {
     const salt = await bcrypt.genSalt(12);
@@ -129,6 +140,7 @@ userSchema.pre("save", async function (next) {
 
 // Compare password method
 userSchema.methods.comparePassword = async function (candidatePassword) {
+  if (!this.password) return false;
   return await bcrypt.compare(candidatePassword, this.password);
 };
 

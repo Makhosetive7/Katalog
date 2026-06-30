@@ -20,6 +20,12 @@ export const login = async (req, res) => {
       });
     }
 
+    if (user.authProvider === "google" && !user.password) {
+      return res.status(401).json({
+        message: "This account uses Google sign-in. Please continue with Google.",
+      });
+    }
+
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
       return res.status(401).json({
@@ -43,6 +49,7 @@ export const login = async (req, res) => {
         username: user.username,
         email: user.email,
         isVerified: user.isVerified,
+        authProvider: user.authProvider,
         profile: user.profile,
       },
     });
